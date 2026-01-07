@@ -14,12 +14,14 @@ import {
   type GroupPost,
 } from "../../lib/groups";
 import { subscribeToNotes, type Note } from "../../lib/notes";
+import { subscribeToTasks, type Task } from "../../lib/tasks";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const navigate = useNavigate(); // Add hook
   const [announcements, setAnnouncements] = useState<GroupPost[]>([]);
   const [recentNotes, setRecentNotes] = useState<Note[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   // Fetch Announcements from all groups
   useEffect(() => {
@@ -80,6 +82,34 @@ export default function DashboardPage() {
     return () => unsubscribe();
   }, [user]);
 
+  // Fetch Tasks
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = subscribeToTasks(user.uid, (allTasks) => {
+      // Filter for incomplete tasks, sort by due date (nearest first)
+      const pending = allTasks
+        .filter((t) => !t.completed)
+        .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
+        .slice(0, 5);
+      setTasks(pending);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Fetch Tasks
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = subscribeToTasks(user.uid, (allTasks) => {
+      // Filter for incomplete tasks, sort by due date (nearest first)
+      const pending = allTasks
+        .filter((t) => !t.completed)
+        .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
+        .slice(0, 5);
+      setTasks(pending);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
@@ -127,8 +157,46 @@ export default function DashboardPage() {
               View All
             </button>
           </div>
-          <div className="flex-1 flex items-center justify-center text-gray-400">
-            <span className="text-sm">No pending tasks</span>
+
+          <div className="space-y-3 flex-1 overflow-y-auto max-h-[220px] pr-1">
+            {tasks.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center text-gray-400">
+                <span className="text-sm">No pending tasks</span>
+              </div>
+            ) : (
+              tasks.map((task) => (
+                <div
+                  key={task.id}
+                  onClick={() => navigate("/tasks")}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 bg-white border border-gray-100 transition-colors cursor-pointer"
+                >
+                  <div
+                    className={`w-2 h-2 rounded-full shrink-0 ${
+                      task.priority === "high"
+                        ? "bg-red-500"
+                        : task.priority === "medium"
+                        ? "bg-orange-400"
+                        : "bg-green-400"
+                    }`}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm text-gray-900 truncate">
+                      {task.title}
+                    </div>
+                    <div className="text-xs text-gray-500 truncate">
+                      {task.courseCode ? (
+                        <span className="font-semibold">
+                          {task.courseCode} •{" "}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                      Due {task.dueDate.toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

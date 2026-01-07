@@ -13,6 +13,8 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 import TimetablePage from "./pages/dashboard/TimetablePage";
 import TasksPage from "./pages/dashboard/TasksPage";
 import NotebookPage from "./pages/dashboard/NotebookPage";
+import GroupsPage from "./pages/dashboard/GroupsPage";
+import GroupDetailPage from "./pages/dashboard/GroupDetailPage";
 
 // Layouts & Auth
 import DashboardLayout from "./components/layout/DashboardLayout";
@@ -54,6 +56,8 @@ function App() {
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/timetable" element={<TimetablePage />} />
+            <Route path="/groups" element={<GroupsPage />} />
+            <Route path="/groups/:groupId" element={<GroupDetailPage />} />
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/notebook" element={<NotebookPage />} />
           </Route>

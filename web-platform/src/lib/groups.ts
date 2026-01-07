@@ -234,3 +234,30 @@ export const subscribeToPosts = (
     }
   );
 };
+
+export const subscribeToAssessments = (
+  groupId: string,
+  callback: (posts: GroupPost[]) => void
+) => {
+  const q = query(
+    collection(db, "groups", groupId, "posts"),
+    where("isAssessment", "==", true)
+  );
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const posts = snapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          } as GroupPost)
+      );
+      callback(posts);
+    },
+    (error) => {
+      console.error("Error subscribing to assessments:", error);
+    }
+  );
+};

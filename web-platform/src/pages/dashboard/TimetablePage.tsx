@@ -7,14 +7,22 @@ import { Plus } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 import AddCourseDialog from "../../components/timetable/AddCourseDialog";
 import { addCourse, subscribeToCourses } from "../../lib/courses";
+import { subscribeToUserGroups, subscribeToUnits, type AcademicUnit, type AcademicGroup } from "../../lib/groups";
 import type { Course } from "../../types";
+
+const DAY_MAP: Record<string, number> = {
+  "Sunday": 0, "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6
+};
 
 export default function TimetablePage() {
   const { user } = useAuthStore();
   const calendarRef = useRef<FullCalendar>(null);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [userGroups, setUserGroups] = useState<AcademicGroup[]>([]);
+  const [groupUnits, setGroupUnits] = useState<AcademicUnit[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  // 1. Subscribe to Personal Courses
   useEffect(() => {
     if (!user) return;
     const unsubscribe = subscribeToCourses(user.uid, (fetchedCourses) => {
@@ -23,8 +31,43 @@ export default function TimetablePage() {
     return () => unsubscribe();
   }, [user]);
 
+  // 2. Subscribe to User's Joined Groups
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = subscribeToUserGroups(user.uid, (groups) => {
+      setUserGroups(groups);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // 3. Subscribe to Units for each Joined Group
+  useEffect(() => {
+    if (userGroups.length === 0) {
+      setGroupUnits([]);
+      return;
+    }
+    
+    const unsubscribers: (() => void)[] = [];
+    const unitsMap = new Map<string, AcademicUnit[]>();
+
+    userGroups.forEach(group => {
+       const unsub = subscribeToUnits(group.id, (units) => {
+           unitsMap.set(group.id, units);
+           // Flatten map to array and update state
+           const allUnits = Array.from(unitsMap.values()).flat();
+           setGroupUnits(allUnits);
+       });
+       unsubscribers.push(unsub);
+    });
+
+    return () => {
+      unsubscribers.forEach(u => u());
+    }
+  }, [userGroups]);
+
+
   // Transform Firestore courses into FullCalendar recurring events
-  const events = courses.map((course) => ({
+  const personalEvents = courses.map((course) => ({
     id: course.id,
     title: course.name,
     daysOfWeek: [parseInt(course.dayOfWeek.toString())], // FullCalendar uses 0=Sunday
@@ -35,8 +78,30 @@ export default function TimetablePage() {
     extendedProps: {
       location: course.location,
       code: course.code,
+      type: 'personal'
     },
   }));
+
+  // Transform Group Units into FullCalendar recurring events
+  const groupEvents = groupUnits.flatMap((unit) => 
+     unit.schedule.map((slot, idx) => ({
+        id: `${unit.id}-${idx}`,
+        title: unit.name,
+        daysOfWeek: [DAY_MAP[slot.day] ?? 1], 
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        backgroundColor: '#4f46e5', // Indigo-600 for group units
+        borderColor: '#4338ca',
+        extendedProps: {
+           location: slot.location,
+           code: unit.code,
+           type: 'group',
+           lecturer: unit.lecturerName
+        }
+     }))
+  );
+
+  const events = [...personalEvents, ...groupEvents];
 
   const handleAddCourse = async (data: any) => {
     if (!user) return;

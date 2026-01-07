@@ -4,6 +4,7 @@ import {
   CalendarDays,
   CheckSquare,
   BookText,
+  Users,
   GraduationCap,
   LogOut,
   X,
@@ -23,6 +24,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Timetable", href: "/timetable", icon: CalendarDays },
+    { name: "Classes", href: "/groups", icon: Users },
     { name: "Tasks", href: "/tasks", icon: CheckSquare },
     { name: "Notebook", href: "/notebook", icon: BookText },
   ];

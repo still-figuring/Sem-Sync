@@ -60,51 +60,53 @@ export default function AddTaskDialog({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 sm:rounded-lg">
+        <Dialog.Overlay className="fixed inset-0 bg-background/80 z-50 backdrop-blur-sm" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-card p-6 shadow-lg duration-200 sm:rounded-lg">
           <div className="flex flex-col space-y-1.5 text-center sm:text-left">
-            <Dialog.Title className="text-lg font-semibold leading-none tracking-tight">
+            <Dialog.Title className="text-lg font-semibold leading-none tracking-tight text-foreground">
               Add New Task
             </Dialog.Title>
-            <Dialog.Description className="text-sm text-gray-500">
+            <Dialog.Description className="text-sm text-muted-foreground">
               Create a new task to track your academic progress.
             </Dialog.Description>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none">
+              <label className="text-sm font-medium leading-none text-foreground">
                 Task Title
               </label>
               <input
                 {...register("title")}
-                className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="e.g. Complete Calculus Assignment"
               />
               {errors.title && (
-                <p className="text-xs text-red-500">{errors.title.message}</p>
+                <p className="text-xs text-destructive">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium leading-none">
+                <label className="text-sm font-medium leading-none text-foreground">
                   Course Code (Optional)
                 </label>
                 <input
                   {...register("courseCode")}
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="CS101"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium leading-none">
+                <label className="text-sm font-medium leading-none text-foreground">
                   Priority
                 </label>
                 <select
                   {...register("priority")}
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -114,26 +116,28 @@ export default function AddTaskDialog({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none">
+              <label className="text-sm font-medium leading-none text-foreground">
                 Due Date
               </label>
               <input
                 type="datetime-local"
                 {...register("dueDate")}
-                className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary [&::-webkit-calendar-picker-indicator]:dark:invert"
               />
               {errors.dueDate && (
-                <p className="text-xs text-red-500">{errors.dueDate.message}</p>
+                <p className="text-xs text-destructive">
+                  {errors.dueDate.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none">
+              <label className="text-sm font-medium leading-none text-foreground">
                 Description
               </label>
               <textarea
                 {...register("description")}
-                className="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Add details about this task..."
               />
             </div>
@@ -142,7 +146,7 @@ export default function AddTaskDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-gray-100 h-10 px-4 py-2"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted text-foreground h-10 px-4 py-2"
               >
                 Cancel
               </button>

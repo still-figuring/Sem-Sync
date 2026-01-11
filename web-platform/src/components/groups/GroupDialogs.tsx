@@ -60,23 +60,25 @@ export function AddUnitDialog({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg sm:rounded-lg max-h-[90vh] overflow-y-auto">
-          <Dialog.Title className="text-lg font-semibold">
+        <Dialog.Overlay className="fixed inset-0 bg-background/80 z-50 backdrop-blur-sm" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-card p-6 shadow-lg sm:rounded-lg max-h-[90vh] overflow-y-auto">
+          <Dialog.Title className="text-lg font-semibold text-foreground">
             Add New Unit
           </Dialog.Title>
-          <Dialog.Description className="text-sm text-gray-500 mb-4">
+          <Dialog.Description className="text-sm text-muted-foreground mb-4">
             Add a subject/module to this course.
           </Dialog.Description>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Unit Name</label>
+                <label className="text-sm font-medium text-foreground">
+                  Unit Name
+                </label>
                 <input
                   required
                   placeholder="e.g. Dist. Systems"
-                  className="w-full border rounded p-2 text-sm"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -84,11 +86,13 @@ export function AddUnitDialog({
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Unit Code</label>
+                <label className="text-sm font-medium text-foreground">
+                  Unit Code
+                </label>
                 <input
                   required
                   placeholder="e.g. SCT 211"
-                  className="w-full border rounded p-2 text-sm"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.code}
                   onChange={(e) =>
                     setFormData({ ...formData, code: e.target.value })
@@ -98,11 +102,13 @@ export function AddUnitDialog({
             </div>
 
             <div>
-              <label className="text-sm font-medium">Lecturer Name</label>
+              <label className="text-sm font-medium text-foreground">
+                Lecturer Name
+              </label>
               <input
                 required
                 placeholder="e.g. Dr. Lawrence"
-                className="w-full border rounded p-2 text-sm"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 value={formData.lecturerName}
                 onChange={(e) =>
                   setFormData({ ...formData, lecturerName: e.target.value })
@@ -112,7 +118,9 @@ export function AddUnitDialog({
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-sm font-medium">Class Schedule</label>
+                <label className="text-sm font-medium text-foreground">
+                  Class Schedule
+                </label>
                 <button
                   type="button"
                   onClick={() =>
@@ -126,7 +134,7 @@ export function AddUnitDialog({
                       },
                     ])
                   }
-                  className="text-xs flex items-center text-indigo-600 hover:underline"
+                  className="text-xs flex items-center text-primary hover:underline"
                 >
                   <Plus className="h-3 w-3 mr-1" /> Add Slot
                 </button>
@@ -134,12 +142,14 @@ export function AddUnitDialog({
               {schedule.map((slot, index) => (
                 <div
                   key={index}
-                  className="grid grid-cols-7 gap-2 items-end border p-2 rounded bg-gray-50"
+                  className="grid grid-cols-7 gap-2 items-end border border-border p-2 rounded bg-muted/50"
                 >
                   <div className="col-span-2">
-                    <label className="text-[10px] text-gray-500">Day</label>
+                    <label className="text-[10px] text-muted-foreground">
+                      Day
+                    </label>
                     <select
-                      className="w-full text-xs p-1 border rounded"
+                      className="w-full text-xs p-1 border border-input rounded bg-background text-foreground"
                       value={slot.day}
                       onChange={(e) =>
                         updateSchedule(index, "day", e.target.value)
@@ -160,20 +170,22 @@ export function AddUnitDialog({
                     </select>
                   </div>
                   <div className="col-span-2">
-                    <label className="text-[10px] text-gray-500">Time</label>
+                    <label className="text-[10px] text-muted-foreground">
+                      Time
+                    </label>
                     <div className="flex items-center gap-1">
                       <input
                         type="time"
-                        className="w-full text-xs p-1 border rounded"
+                        className="w-full text-xs p-1 border border-input rounded bg-background text-foreground [&::-webkit-calendar-picker-indicator]:dark:invert"
                         value={slot.startTime}
                         onChange={(e) =>
                           updateSchedule(index, "startTime", e.target.value)
                         }
                       />
-                      <span className="text-gray-400">-</span>
+                      <span className="text-muted-foreground/50">-</span>
                       <input
                         type="time"
-                        className="w-full text-xs p-1 border rounded"
+                        className="w-full text-xs p-1 border border-input rounded bg-background text-foreground [&::-webkit-calendar-picker-indicator]:dark:invert"
                         value={slot.endTime}
                         onChange={(e) =>
                           updateSchedule(index, "endTime", e.target.value)
@@ -182,9 +194,11 @@ export function AddUnitDialog({
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label className="text-[10px] text-gray-500">Room</label>
+                    <label className="text-[10px] text-muted-foreground">
+                      Room
+                    </label>
                     <input
-                      className="w-full text-xs p-1 border rounded"
+                      className="w-full text-xs p-1 border border-input rounded bg-background text-foreground"
                       placeholder="Lab 1"
                       value={slot.location}
                       onChange={(e) =>
@@ -199,7 +213,7 @@ export function AddUnitDialog({
                         onClick={() =>
                           setSchedule(schedule.filter((_, i) => i !== index))
                         }
-                        className="text-red-500 hover:text-red-700"
+                        className="text-destructive hover:text-destructive/80"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -213,14 +227,14 @@ export function AddUnitDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md hover:bg-gray-50"
+                className="px-4 py-2 text-sm font-medium text-foreground bg-background border border-input rounded-md hover:bg-muted"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90 disabled:opacity-50"
               >
                 {loading ? "Adding..." : "Add Unit"}
               </button>
@@ -267,21 +281,23 @@ export function CreateGroupDialog({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg sm:rounded-lg">
-          <Dialog.Title className="text-lg font-semibold">
+        <Dialog.Overlay className="fixed inset-0 bg-background/80 z-50 backdrop-blur-sm" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-card p-6 shadow-lg sm:rounded-lg">
+          <Dialog.Title className="text-lg font-semibold text-foreground">
             Create New Class Group
           </Dialog.Title>
-          <Dialog.Description className="text-sm text-gray-500 mb-4">
+          <Dialog.Description className="text-sm text-muted-foreground mb-4">
             Become the Class Rep and manage this group.
           </Dialog.Description>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Course Name</label>
+              <label className="text-sm font-medium text-foreground">
+                Course Name
+              </label>
               <input
                 required
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:ring-1 focus:ring-primary"
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="e.g. Intro to Computer Science"
                 value={formData.name}
                 onChange={(e) =>
@@ -290,10 +306,12 @@ export function CreateGroupDialog({
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Course Code</label>
+              <label className="text-sm font-medium text-foreground">
+                Course Code
+              </label>
               <input
                 required
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:ring-1 focus:ring-primary"
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="e.g. CS101"
                 value={formData.code}
                 onChange={(e) =>
@@ -302,10 +320,12 @@ export function CreateGroupDialog({
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Lecturer Name</label>
+              <label className="text-sm font-medium text-foreground">
+                Lecturer Name
+              </label>
               <input
                 required
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:ring-1 focus:ring-primary"
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="e.g. Dr. Smith"
                 value={formData.lecturerName}
                 onChange={(e) =>
@@ -318,14 +338,14 @@ export function CreateGroupDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-md"
+                className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-md"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
               >
                 {loading ? "Creating..." : "Create Class"}
               </button>
@@ -367,41 +387,45 @@ export function JoinGroupDialog({ open, onOpenChange }: JoinGroupDialogProps) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg sm:rounded-lg">
-          <Dialog.Title className="text-lg font-semibold">
+        <Dialog.Overlay className="fixed inset-0 bg-background/80 z-50 backdrop-blur-sm" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-card p-6 shadow-lg sm:rounded-lg">
+          <Dialog.Title className="text-lg font-semibold text-foreground">
             Join Existing Class
           </Dialog.Title>
-          <Dialog.Description className="text-sm text-gray-500 mb-4">
+          <Dialog.Description className="text-sm text-muted-foreground mb-4">
             Enter the 6-character code provided by your Class Rep.
           </Dialog.Description>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Join Code</label>
+              <label className="text-sm font-medium text-foreground">
+                Join Code
+              </label>
               <input
                 required
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:ring-1 focus:ring-primary uppercase tracking-widest"
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase tracking-widest"
                 placeholder="A1B2C3"
                 maxLength={6}
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
               />
-              {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+              {error && (
+                <p className="text-xs text-destructive mt-1">{error}</p>
+              )}
             </div>
 
             <div className="flex justify-end gap-2 mt-4">
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-md"
+                className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-md"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
               >
                 {loading ? "Joining..." : "Join Class"}
               </button>

@@ -75,7 +75,7 @@ export default function AddCourseDialog({
               <div className="col-span-3">
                 <input
                   id="name"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   placeholder="e.g. Intro to CS"
                   {...register("name")}
                 />
@@ -97,7 +97,7 @@ export default function AddCourseDialog({
               <div className="col-span-3">
                 <input
                   id="location"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                   placeholder="e.g. Hall A"
                   {...register("location")}
                 />
@@ -118,7 +118,7 @@ export default function AddCourseDialog({
               </label>
               <select
                 id="dayOfWeek"
-                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
                 {...register("dayOfWeek")}
               >
                 <option value="1">Monday</option>
@@ -136,13 +136,13 @@ export default function AddCourseDialog({
               <div className="col-span-3 flex gap-2">
                 <input
                   type="time"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground [&::-webkit-calendar-picker-indicator]:dark:invert"
                   {...register("startTime")}
                 />
                 <span className="self-center">-</span>
                 <input
                   type="time"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground [&::-webkit-calendar-picker-indicator]:dark:invert"
                   {...register("endTime")}
                 />
               </div>

@@ -197,11 +197,6 @@ export default function GroupDetailPage() {
       {/* Header */}
       <div className="flex flex-col gap-4">
         <button
-  return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col gap-4">
-        <button
           onClick={() => navigate("/groups")}
           className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors self-start"
         >
@@ -212,7 +207,9 @@ export default function GroupDetailPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-foreground">{group.name}</h1>
+              <h1 className="text-3xl font-bold text-foreground">
+                {group.name}
+              </h1>
               {isRep && (
                 <span className="inline-flex items-center rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 dark:text-indigo-400">
                   <Shield className="h-3 w-3 mr-1" />
@@ -591,7 +588,9 @@ export default function GroupDetailPage() {
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-bold text-foreground">{unit.name}</h3>
+                        <h3 className="font-bold text-foreground">
+                          {unit.name}
+                        </h3>
                         <p className="text-sm text-muted-foreground">
                           {unit.code} • {unit.lecturerName}
                         </p>

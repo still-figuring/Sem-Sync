@@ -17,6 +17,7 @@ import NotebookPage from "./pages/dashboard/NotebookPage";
 import GroupsPage from "./pages/dashboard/GroupsPage";
 import GroupDetailPage from "./pages/dashboard/GroupDetailPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
+import InstructorDashboard from "./pages/dashboard/InstructorDashboard";
 
 // Layouts & Auth
 import DashboardLayout from "./components/layout/DashboardLayout";
@@ -64,6 +65,7 @@ function App() {
               <Route path="/tasks" element={<TasksPage />} />
               <Route path="/notebook" element={<NotebookPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/instructor" element={<InstructorDashboard />} />
             </Route>
           </Route>
 

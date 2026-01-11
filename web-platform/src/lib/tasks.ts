@@ -39,25 +39,31 @@ export const subscribeToTasks = (
 
   const q = query(collection(db, "tasks"), where("userId", "==", userId));
 
-  return onSnapshot(q, (snapshot) => {
-    const tasks = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        // Convert Firestore Timestamp to JS Date
-        dueDate:
-          data.dueDate instanceof Timestamp
-            ? data.dueDate.toDate()
-            : new Date(data.dueDate),
-      } as Task;
-    });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const tasks = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JS Date
+          dueDate:
+            data.dueDate instanceof Timestamp
+              ? data.dueDate.toDate()
+              : new Date(data.dueDate),
+        } as Task;
+      });
 
-    // Client-side sort by due date (nearest first)
-    tasks.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+      // Client-side sort by due date (nearest first)
+      tasks.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
 
-    callback(tasks);
-  });
+      callback(tasks);
+    },
+    (error) => {
+      console.error("Error subscribing to tasks:", error);
+    }
+  );
 };
 
 export const addTask = async (
@@ -96,10 +102,16 @@ export const subscribeToCompletedAssessments = (
 ) => {
   const collectionRef = collection(db, "users", userId, "completedAssessments");
 
-  return onSnapshot(collectionRef, (snapshot) => {
-    const ids = snapshot.docs.map((doc) => doc.id);
-    callback(ids);
-  });
+  return onSnapshot(
+    collectionRef,
+    (snapshot) => {
+      const ids = snapshot.docs.map((doc) => doc.id);
+      callback(ids);
+    },
+    (error) => {
+      console.error("Error subscribing to completed assessments:", error);
+    }
+  );
 };
 
 /**

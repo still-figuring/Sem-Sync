@@ -32,16 +32,22 @@ export const subscribeToNotes = (
   // Sort by lastModified descending (newest first)
   const q = query(notesRef, orderBy("lastModified", "desc"));
 
-  return onSnapshot(q, (snapshot) => {
-    const notes = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-      } as Note;
-    });
-    callback(notes);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const notes = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+        } as Note;
+      });
+      callback(notes);
+    },
+    (error) => {
+      console.error("Error subscribing to notes:", error);
+    }
+  );
 };
 
 export const createNote = async (userId: string) => {

@@ -28,13 +28,19 @@ export const subscribeToCourses = (
   const coursesRef = collection(db, "users", userId, "courses");
   const q = query(coursesRef);
 
-  return onSnapshot(q, (snapshot) => {
-    const courses = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Course[];
-    callback(courses);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const courses = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Course[];
+      callback(courses);
+    },
+    (error) => {
+      console.error("Error subscribing to courses:", error);
+    }
+  );
 };
 
 export const deleteCourse = async (userId: string, courseId: string) => {

@@ -366,13 +366,19 @@ export const subscribeToResources = (
     orderBy("createdAt", "desc")
   );
 
-  return onSnapshot(q, (snapshot) => {
-    const resources = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as CourseResource[];
-    callback(resources);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const resources = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as CourseResource[];
+      callback(resources);
+    },
+    (error) => {
+      console.error("Error subscribing to resources:", error);
+    }
+  );
 };
 
 // 3. Delete Resource

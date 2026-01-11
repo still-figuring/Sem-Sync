@@ -197,46 +197,51 @@ export default function GroupDetailPage() {
       {/* Header */}
       <div className="flex flex-col gap-4">
         <button
+  return (
+    <div className="space-y-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col gap-4">
+        <button
           onClick={() => navigate("/groups")}
-          className="flex items-center text-sm text-gray-500 hover:text-gray-900 transition-colors self-start"
+          className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors self-start"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back to Groups
         </button>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-gray-900">{group.name}</h1>
+              <h1 className="text-3xl font-bold text-foreground">{group.name}</h1>
               {isRep && (
-                <span className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
+                <span className="inline-flex items-center rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 dark:text-indigo-400">
                   <Shield className="h-3 w-3 mr-1" />
                   You are Rep
                 </span>
               )}
             </div>
-            <p className="text-lg text-gray-600 mt-1">
+            <p className="text-lg text-muted-foreground mt-1">
               {group.code} • {group.memberCount} Students
             </p>
           </div>
 
-          <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg border">
+          <div className="flex items-center gap-4 bg-muted/50 p-3 rounded-lg border border-border">
             <div className="flex flex-col text-right">
-              <span className="text-xs uppercase text-gray-500 font-semibold tracking-wider">
+              <span className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">
                 Join Code
               </span>
-              <span className="font-mono text-xl font-bold text-indigo-600 select-all">
+              <span className="font-mono text-xl font-bold text-primary select-all">
                 {group.joinCode}
               </span>
             </div>
-            <div className="h-8 w-px bg-gray-300"></div>
+            <div className="h-8 w-px bg-border"></div>
             <div className="flex flex-col">
-              <span className="text-xs uppercase text-gray-500 font-semibold tracking-wider">
+              <span className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">
                 Members
               </span>
               <div className="flex items-center gap-1">
-                <Users className="h-4 w-4 text-gray-600" />
-                <span className="font-semibold text-gray-900">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="font-semibold text-foreground">
                   {group.memberCount}
                 </span>
               </div>
@@ -246,14 +251,14 @@ export default function GroupDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-border">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           <button
             onClick={() => setActiveTab("feed")}
             className={`${
               activeTab === "feed"
-                ? "border-indigo-500 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:border-input"
             } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
           >
             <MessageSquare className="h-4 w-4" />
@@ -263,8 +268,8 @@ export default function GroupDetailPage() {
             onClick={() => setActiveTab("units")}
             className={`${
               activeTab === "units"
-                ? "border-indigo-500 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:border-input"
             } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
           >
             <BookOpen className="h-4 w-4" />
@@ -274,8 +279,8 @@ export default function GroupDetailPage() {
             onClick={() => setActiveTab("resources")}
             className={`${
               activeTab === "resources"
-                ? "border-indigo-500 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:border-input"
             } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
           >
             <FileText className="h-4 w-4" />
@@ -291,7 +296,7 @@ export default function GroupDetailPage() {
           {activeTab === "feed" && (
             <>
               {/* Post Creator */}
-              <div className="bg-white rounded-lg border shadow-sm p-4">
+              <div className="bg-card rounded-lg border border-border shadow-sm p-4">
                 <form onSubmit={handlePost} className="space-y-3">
                   <div className="flex gap-2">
                     <div className="flex-1">
@@ -301,7 +306,7 @@ export default function GroupDetailPage() {
                             ? "Post an announcement..."
                             : "Ask a question..."
                         }
-                        className="w-full px-4 py-2 bg-gray-50 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none h-20 text-sm"
+                        className="w-full px-4 py-2 bg-muted/50 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none h-20 text-sm text-foreground placeholder:text-muted-foreground"
                         value={newPost}
                         onChange={(e) => setNewPost(e.target.value)}
                       />
@@ -314,7 +319,7 @@ export default function GroupDetailPage() {
                       <select
                         value={selectedUnitId}
                         onChange={(e) => setSelectedUnitId(e.target.value)}
-                        className="h-8 text-xs border rounded bg-white px-2 focus:ring-2 focus:ring-indigo-500"
+                        className="h-8 text-xs border border-input rounded bg-card text-foreground px-2 focus:ring-2 focus:ring-primary"
                       >
                         <option value="">General (All Cohort)</option>
                         {units.map((u) => (
@@ -326,15 +331,15 @@ export default function GroupDetailPage() {
 
                       {/* Assessment Toggle (Rep Only) */}
                       {isRep && selectedUnitId && (
-                        <div className="flex items-center gap-2 pl-2 border-l">
-                          <label className="flex items-center gap-1 text-xs text-gray-700 cursor-pointer">
+                        <div className="flex items-center gap-2 pl-2 border-l border-border">
+                          <label className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer">
                             <input
                               type="checkbox"
                               checked={isAssessment}
                               onChange={(e) =>
                                 setIsAssessment(e.target.checked)
                               }
-                              className="rounded text-indigo-600"
+                              className="rounded text-primary focus:ring-primary"
                             />
                             It's a CAT/Exam?
                           </label>
@@ -343,7 +348,7 @@ export default function GroupDetailPage() {
                               type="date"
                               value={examDate}
                               onChange={(e) => setExamDate(e.target.value)}
-                              className="h-7 text-xs border rounded px-1"
+                              className="h-7 text-xs border border-input rounded px-1 bg-card text-foreground"
                             />
                           )}
                         </div>
@@ -353,7 +358,7 @@ export default function GroupDetailPage() {
                     <button
                       disabled={isPosting || !newPost.trim()}
                       type="submit"
-                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 h-8 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Post
                       <Send className="h-3 w-3 ml-2" />
@@ -365,11 +370,11 @@ export default function GroupDetailPage() {
               {/* Posts List */}
               <div className="space-y-4">
                 {postsLoading ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-muted-foreground">
                     Loading posts...
                   </div>
                 ) : posts.length === 0 ? (
-                  <div className="bg-white rounded-lg border shadow-sm p-12 flex flex-col items-center justify-center text-gray-400 text-center">
+                  <div className="bg-card rounded-lg border border-border shadow-sm p-12 flex flex-col items-center justify-center text-muted-foreground text-center">
                     <MessageSquare className="h-12 w-12 mb-3 opacity-20" />
                     <p>No posts yet. Start the conversation!</p>
                   </div>
@@ -377,17 +382,17 @@ export default function GroupDetailPage() {
                   posts.map((post) => (
                     <div
                       key={post.id}
-                      className="bg-white rounded-lg border shadow-sm p-4 transition-all hover:bg-gray-50/50"
+                      className="bg-card rounded-lg border border-border shadow-sm p-4 transition-all hover:bg-muted/30"
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-gray-900">
+                          <span className="font-semibold text-foreground">
                             {post.authorName}
                           </span>
 
                           {/* Unit Tag */}
                           {post.unitName && (
-                            <span className="text-[10px] font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded flex items-center">
+                            <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 px-1.5 py-0.5 rounded flex items-center">
                               <BookOpen className="h-3 w-3 mr-1" />
                               {post.unitName}
                             </span>
@@ -395,7 +400,7 @@ export default function GroupDetailPage() {
 
                           {/* Assessment Tag */}
                           {post.isAssessment && (
-                            <span className="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded flex items-center uppercase">
+                            <span className="text-[10px] font-bold text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30 border border-orange-100 dark:border-orange-800 px-1.5 py-0.5 rounded flex items-center uppercase">
                               <Calendar className="h-3 w-3 mr-1" />
                               EXAM / CAT
                             </span>
@@ -403,12 +408,12 @@ export default function GroupDetailPage() {
 
                           {post.type === "announcement" &&
                             !post.isAssessment && (
-                              <span className="text-[10px] uppercase font-bold text-red-600 bg-red-50 border border-red-100 px-1.5 py-0.5 rounded">
+                              <span className="text-[10px] uppercase font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800 px-1.5 py-0.5 rounded">
                                 Announcement
                               </span>
                             )}
                         </div>
-                        <span className="text-xs text-gray-500 whitespace-nowrap">
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
                           {post.createdAt?.toMillis
                             ? formatDistanceToNow(post.createdAt.toMillis(), {
                                 addSuffix: true,
@@ -416,11 +421,11 @@ export default function GroupDetailPage() {
                             : "Just now"}
                         </span>
                       </div>
-                      <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-sm">
+                      <p className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm">
                         {post.content}
                       </p>
                       {post.eventDate && (
-                        <div className="mt-3 p-2 bg-orange-50 border border-orange-100 rounded text-xs text-orange-800 flex items-center">
+                        <div className="mt-3 p-2 bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30 rounded text-xs text-orange-800 dark:text-orange-300 flex items-center">
                           <Clock className="h-3 w-3 mr-2" />
                           <strong>Due Date:</strong>{" "}
                           {new Date(
@@ -439,8 +444,8 @@ export default function GroupDetailPage() {
             <div className="space-y-6">
               {/* Upload Form - Rep Only */}
               {isRep && (
-                <div className="bg-white rounded-lg border shadow-sm p-4">
-                  <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <div className="bg-card rounded-lg border border-border shadow-sm p-4">
+                  <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-foreground">
                     <Paperclip className="h-4 w-4" />
                     Upload Learning Material
                   </h3>
@@ -449,7 +454,7 @@ export default function GroupDetailPage() {
                       <input
                         type="text"
                         placeholder="File Title (e.g., Week 1 Slides)"
-                        className="text-sm border rounded px-3 py-2"
+                        className="text-sm border border-input bg-background rounded px-3 py-2 text-foreground placeholder:text-muted-foreground"
                         value={resourceTitle}
                         onChange={(e) => setResourceTitle(e.target.value)}
                         required
@@ -457,7 +462,7 @@ export default function GroupDetailPage() {
                       <select
                         value={resourceUnitId}
                         onChange={(e) => setResourceUnitId(e.target.value)}
-                        className="text-sm border rounded px-3 py-2 bg-white"
+                        className="text-sm border border-input rounded px-3 py-2 bg-background text-foreground"
                         required
                       >
                         <option value="">Select Unit</option>
@@ -471,7 +476,7 @@ export default function GroupDetailPage() {
                     <div className="flex items-center gap-2">
                       <input
                         type="file"
-                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                        className="text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
                         onChange={(e) =>
                           setUploadFile(
                             e.target.files ? e.target.files[0] : null
@@ -483,7 +488,7 @@ export default function GroupDetailPage() {
                       <button
                         type="submit"
                         disabled={isUploading}
-                        className="bg-indigo-600 text-white text-sm px-4 py-2 rounded hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                        className="bg-primary text-primary-foreground text-sm px-4 py-2 rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
                       >
                         {isUploading ? "Uploading..." : "Upload"}
                       </button>
@@ -495,9 +500,9 @@ export default function GroupDetailPage() {
               {/* Resources List */}
               <div className="space-y-3">
                 {resources.length === 0 ? (
-                  <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
-                    <FileText className="mx-auto h-12 w-12 text-gray-300" />
-                    <h3 className="mt-2 text-sm font-semibold text-gray-900">
+                  <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
+                    <FileText className="mx-auto h-12 w-12 text-muted-foreground/30" />
+                    <h3 className="mt-2 text-sm font-semibold text-foreground">
                       No resources available
                     </h3>
                   </div>
@@ -505,15 +510,15 @@ export default function GroupDetailPage() {
                   resources.map((res) => (
                     <div
                       key={res.id}
-                      className="bg-white p-3 rounded-lg border shadow-sm flex items-start gap-3 hover:border-indigo-300 transition-colors"
+                      className="bg-card p-3 rounded-lg border border-border shadow-sm flex items-start gap-3 hover:border-primary/50 transition-colors"
                     >
-                      <div className="h-10 w-10 bg-indigo-50 rounded flex items-center justify-center shrink-0">
-                        <FileText className="h-5 w-5 text-indigo-600" />
+                      <div className="h-10 w-10 bg-primary/10 rounded flex items-center justify-center shrink-0">
+                        <FileText className="h-5 w-5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start">
                           <h4
-                            className="font-medium text-sm text-gray-900 truncate pr-2"
+                            className="font-medium text-sm text-foreground truncate pr-2"
                             title={res.title}
                           >
                             {res.title}
@@ -521,17 +526,17 @@ export default function GroupDetailPage() {
                           {isRep && (
                             <button
                               onClick={() => handleDeleteResource(res)}
-                              className="text-gray-400 hover:text-red-500"
+                              className="text-muted-foreground hover:text-destructive"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                          <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded">
                             {res.unitName}
                           </span>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-muted-foreground">
                             •{" "}
                             {new Date(
                               res.createdAt?.seconds * 1000 || Date.now()
@@ -543,7 +548,7 @@ export default function GroupDetailPage() {
                         href={res.fileUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="h-8 w-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                        className="h-8 w-8 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80 text-muted-foreground transition-colors"
                         title="Download"
                       >
                         <Download className="h-4 w-4" />
@@ -561,7 +566,7 @@ export default function GroupDetailPage() {
                 <div className="flex justify-end">
                   <button
                     onClick={() => setIsAddUnitOpen(true)}
-                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-indigo-600 text-white hover:bg-indigo-700 h-9 px-4 py-2"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
                   >
                     Add New Unit
                   </button>
@@ -569,12 +574,12 @@ export default function GroupDetailPage() {
               )}
 
               {units.length === 0 ? (
-                <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
-                  <BookOpen className="mx-auto h-12 w-12 text-gray-300" />
-                  <h3 className="mt-2 text-sm font-semibold text-gray-900">
+                <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
+                  <BookOpen className="mx-auto h-12 w-12 text-muted-foreground/30" />
+                  <h3 className="mt-2 text-sm font-semibold text-foreground">
                     No units added yet
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Reps can add units to build the schedule.
                   </p>
                 </div>
@@ -582,34 +587,34 @@ export default function GroupDetailPage() {
                 units.map((unit) => (
                   <div
                     key={unit.id}
-                    className="bg-white rounded-lg border shadow-sm p-4"
+                    className="bg-card rounded-lg border border-border shadow-sm p-4"
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-bold text-gray-900">{unit.name}</h3>
-                        <p className="text-sm text-gray-500">
+                        <h3 className="font-bold text-foreground">{unit.name}</h3>
+                        <p className="text-sm text-muted-foreground">
                           {unit.code} • {unit.lecturerName}
                         </p>
                       </div>
                     </div>
                     <div className="mt-4 grid gap-2">
-                      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Schedule
                       </h4>
                       <div className="grid gap-2 sm:grid-cols-2">
                         {unit.schedule.map((slot, idx) => (
                           <div
                             key={idx}
-                            className="flex items-center gap-3 p-2 rounded bg-gray-50 text-sm border"
+                            className="flex items-center gap-3 p-2 rounded bg-muted/50 text-sm border border-border"
                           >
-                            <div className="flex flex-col items-center justify-center w-10 h-10 rounded bg-white border shadow-sm font-bold text-indigo-600 text-xs">
+                            <div className="flex flex-col items-center justify-center w-10 h-10 rounded bg-card border border-border shadow-sm font-bold text-primary text-xs">
                               {slot.day.substring(0, 3)}
                             </div>
                             <div>
-                              <div className="font-medium">
+                              <div className="font-medium text-foreground">
                                 {slot.startTime} - {slot.endTime}
                               </div>
-                              <div className="text-xs text-gray-500 flex items-center">
+                              <div className="text-xs text-muted-foreground flex items-center">
                                 <MapPin className="h-3 w-3 mr-1" />
                                 {slot.location || "No location"}
                               </div>
@@ -627,12 +632,12 @@ export default function GroupDetailPage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <div className="bg-white rounded-lg border shadow-sm p-4">
-            <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+          <div className="bg-card rounded-lg border border-border shadow-sm p-4">
+            <h3 className="font-semibold text-foreground mb-3 flex items-center">
               <User className="h-4 w-4 mr-2" />
               Class Rep
             </h3>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               {isRep
                 ? "You are managing this class."
                 : "Contact your Rep for info."}

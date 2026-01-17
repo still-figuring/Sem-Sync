@@ -7,6 +7,7 @@ This repository contains the React-based frontend application powered by Firebas
 ## Key Features
 
 ### for Students
+
 - **Dashboard**: Get a "at a glance" view of today's classes and pending tasks.
 - **Interactive Timetable**: Manage personal courses and view synchronized group schedules using a calendar interface.
 - **Academic Groups**: Join class groups using unique codes to access shared schedules and resources.
@@ -15,6 +16,7 @@ This repository contains the React-based frontend application powered by Firebas
 - **Resource Sharing**: Download learning materials (PDFs, slides) uploaded by Class Reps.
 
 ### for Class Representatives & Instructors
+
 - **Group Management**: Create academic groups and generate join codes for students.
 - **Schedule Management**: Add recurring units and classes that automatically sync to all group members.
 - **Announcements**: Post important updates (postponements, venue changes) that trigger notifications.
@@ -36,18 +38,21 @@ This repository contains the React-based frontend application powered by Firebas
 ## Prerequisites
 
 Before running the project, ensure you have the following installed:
+
 - Node.js (v18 or higher)
 - npm or yarn
 
 ## Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/your-username/semsync-web.git
    cd semsync-web
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -99,16 +104,19 @@ src/
 ## Usage Guide
 
 ### Joining a Group
+
 1. Navigate to the **My Classes** page.
 2. Click **Join Group** and enter the 6-character code provided by your Class Rep.
 3. The group's schedule will automatically merge with your personal timetable.
 
 ### Managing a Timetable (Class Reps)
+
 1. Go to the **Group Details** page.
 2. Select the **Units & Schedule** tab.
 3. Click **Add New Unit** to define a class. This will populate the calendar for all members.
 
 ### Uploading Resources
+
 1. In the **Group Details** page, select the **Resources** tab.
 2. (Rep Only) Fill out the upload form to share PDFs or documents.
 3. Students can view and download these files immediately.

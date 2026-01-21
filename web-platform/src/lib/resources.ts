@@ -8,13 +8,8 @@ import {
   serverTimestamp,
   orderBy,
 } from "firebase/firestore";
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
-import { db, storage } from "./firebase";
+import { db } from "./firebase";
+import { supabase } from "./supabase";
 
 // Resource categories for organization
 export type ResourceCategory =
@@ -99,7 +94,7 @@ export const getAllowedMimeTypes = (): string[] => {
 };
 
 export const validateFile = (
-  file: File
+  file: File,
 ): { valid: boolean; error?: string } => {
   // Size check
   if (file.size > FILE_VALIDATION.maxSize) {
@@ -175,7 +170,7 @@ export const uploadResourceWithProgress = (
     uploadedBy: string;
     uploadedByName: string;
   },
-  onProgress: (progress: UploadProgress) => void
+  onProgress: (progress: UploadProgress) => void,
 ): { promise: Promise<void>; controller: UploadController } => {
   // Validate file first
   const validation = validateFile(file);
@@ -200,115 +195,88 @@ export const uploadResourceWithProgress = (
   const storagePath = `groups/${groupId}/materials/${
     metadata.unitId
   }/${Date.now()}_${file.name}`;
-  const storageRef = ref(storage, storagePath);
 
-  const uploadTask = uploadBytesResumable(storageRef, file, {
-    contentType: file.type,
-    customMetadata: {
-      uploadedBy: metadata.uploadedBy,
-      title: metadata.title,
-    },
-  });
-
+  let isCancelled = false;
   const controller: UploadController = {
-    pause: () => uploadTask.pause(),
-    resume: () => uploadTask.resume(),
-    cancel: () => uploadTask.cancel(),
+    pause: () => {}, // Not supported in basic implementation
+    resume: () => {}, // Not supported in basic implementation
+    cancel: () => {
+      isCancelled = true;
+    },
   };
 
-  const promise = new Promise<void>((resolve, reject) => {
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        onProgress({
-          state: snapshot.state === "paused" ? "paused" : "running",
-          progress: Math.round(progress),
-          bytesTransferred: snapshot.bytesTransferred,
-          totalBytes: snapshot.totalBytes,
-        });
-      },
-      (error) => {
-        let errorMessage = "Upload failed. Please try again.";
+  const promise = (async () => {
+    try {
+      if (isCancelled) throw new Error("Upload cancelled");
 
-        switch (error.code) {
-          case "storage/unauthorized":
-            errorMessage =
-              "You do not have permission to upload files to this group.";
-            break;
-          case "storage/canceled":
-            errorMessage = "Upload was cancelled.";
-            break;
-          case "storage/quota-exceeded":
-            errorMessage = "Storage quota exceeded. Please contact support.";
-            break;
-          default:
-            console.error("Upload error:", error);
-        }
+      // Notify start
+      onProgress({
+        state: "running",
+        progress: 10,
+        bytesTransferred: 0,
+        totalBytes: file.size,
+      });
 
-        onProgress({
-          state: error.code === "storage/canceled" ? "cancelled" : "error",
-          progress: 0,
-          bytesTransferred: 0,
-          totalBytes: file.size,
-          error: errorMessage,
+      // Upload to Supabase
+      const { error: uploadError } = await supabase.storage
+        .from("resources")
+        .upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: false,
         });
 
-        reject(new Error(errorMessage));
-      },
-      async () => {
-        try {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      if (uploadError) throw uploadError;
+      if (isCancelled) throw new Error("Upload cancelled");
 
-          const resourceData = {
-            groupId,
-            ...metadata,
-            fileUrl: downloadURL,
-            storagePath,
-            fileName: file.name,
-            fileType: file.type,
-            fileSize: file.size,
-            createdAt: serverTimestamp(),
-          };
+      onProgress({
+        state: "running",
+        progress: 80,
+        bytesTransferred: file.size,
+        totalBytes: file.size,
+      });
 
-          await addDoc(
-            collection(db, "groups", groupId, "resources"),
-            resourceData
-          );
+      // Get Public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("resources").getPublicUrl(storagePath);
 
-          onProgress({
-            state: "success",
-            progress: 100,
-            bytesTransferred: file.size,
-            totalBytes: file.size,
-          });
+      const resourceData = {
+        groupId,
+        ...metadata,
+        fileUrl: publicUrl,
+        storagePath,
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+        createdAt: serverTimestamp(),
+      };
 
-          resolve();
-        } catch (firestoreError) {
-          // Cleanup: delete the uploaded file if Firestore save fails
-          try {
-            await deleteObject(storageRef);
-          } catch (cleanupError) {
-            console.error(
-              "Failed to cleanup after Firestore error:",
-              cleanupError
-            );
-          }
+      await addDoc(
+        collection(db, "groups", groupId, "resources"),
+        resourceData,
+      );
 
-          onProgress({
-            state: "error",
-            progress: 0,
-            bytesTransferred: 0,
-            totalBytes: file.size,
-            error: "Failed to save resource metadata. Please try again.",
-          });
-
-          reject(firestoreError);
-        }
-      }
-    );
-  });
+      onProgress({
+        state: "success",
+        progress: 100,
+        bytesTransferred: file.size,
+        totalBytes: file.size,
+      });
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      const isCancel = error.message === "Upload cancelled";
+      onProgress({
+        state: isCancel ? "cancelled" : "error",
+        progress: 0,
+        bytesTransferred: 0,
+        totalBytes: file.size,
+        error: isCancel
+          ? "Upload was cancelled."
+          : error.message || "Upload failed. Please try again.",
+      });
+      throw error;
+    }
+  })();
 
   return { promise, controller };
 };
@@ -325,7 +293,7 @@ export const uploadResource = async (
     uploadedBy: string;
     uploadedByName?: string;
     category?: ResourceCategory;
-  }
+  },
 ) => {
   // Validate file
   const validation = validateFile(file);
@@ -334,18 +302,24 @@ export const uploadResource = async (
   }
 
   const storagePath = `groups/${groupId}/materials/${Date.now()}_${file.name}`;
-  const storageRef = ref(storage, storagePath);
 
-  const uploadTask = uploadBytesResumable(storageRef, file);
-  await uploadTask;
-  const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+  // Upload to Supabase
+  const { error: uploadError } = await supabase.storage
+    .from("resources")
+    .upload(storagePath, file, { upsert: false });
+
+  if (uploadError) throw new Error(uploadError.message);
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("resources").getPublicUrl(storagePath);
 
   const resourceData = {
     groupId,
     ...metadata,
     category: metadata.category || "other",
     uploadedByName: metadata.uploadedByName || "Unknown",
-    fileUrl: downloadURL,
+    fileUrl: publicUrl,
     storagePath,
     fileName: file.name,
     fileType: file.type,
@@ -359,11 +333,11 @@ export const uploadResource = async (
 // 2. Subscribe to Resources
 export const subscribeToResources = (
   groupId: string,
-  callback: (resources: CourseResource[]) => void
+  callback: (resources: CourseResource[]) => void,
 ) => {
   const q = query(
     collection(db, "groups", groupId, "resources"),
-    orderBy("createdAt", "desc")
+    orderBy("createdAt", "desc"),
   );
 
   return onSnapshot(
@@ -377,7 +351,7 @@ export const subscribeToResources = (
     },
     (error) => {
       console.error("Error subscribing to resources:", error);
-    }
+    },
   );
 };
 
@@ -385,16 +359,21 @@ export const subscribeToResources = (
 export const deleteResource = async (
   groupId: string,
   resourceId: string,
-  storagePath: string
+  storagePath: string,
 ) => {
   // A. Delete from Storage
-  const storageRef = ref(storage, storagePath);
   try {
-    await deleteObject(storageRef);
+    const { error } = await supabase.storage
+      .from("resources")
+      .remove([storagePath]);
+
+    if (error) {
+      console.error("Error deleting file from storage (Supabase):", error);
+    }
   } catch (err) {
     console.error(
       "Error deleting file from storage (might already be gone):",
-      err
+      err,
     );
   }
 

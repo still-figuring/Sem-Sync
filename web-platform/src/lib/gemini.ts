@@ -1,9 +1,9 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-// Note: In production, move this to a backend to secure your key.
-
-const genAI = new GoogleGenerativeAI(API_KEY || "");
+import {
+  getFunctions,
+  httpsCallable,
+  connectFunctionsEmulator,
+} from "firebase/functions";
+import { app } from "./firebase"; // Ensure this exports your firebase 'app' instance
 
 export interface TimetableEntry {
   day: string;
@@ -15,89 +15,51 @@ export interface TimetableEntry {
   lecturer: string;
 }
 
-const timetableSchema = {
-  description: "List of classes from a timetable",
-  type: SchemaType.ARRAY,
-  items: {
-    type: SchemaType.OBJECT,
-    properties: {
-      day: { type: SchemaType.STRING },
-      startTime: { type: SchemaType.STRING },
-      endTime: { type: SchemaType.STRING },
-      subject: { type: SchemaType.STRING },
-      room: { type: SchemaType.STRING },
-      type: {
-        type: SchemaType.STRING,
-        enum: ["lecture", "tutorial", "lab", "other"],
-      },
-      lecturer: { type: SchemaType.STRING },
-    },
-    required: ["day", "startTime", "endTime", "subject"],
-  },
-};
-
-// Helper: Pause execution for X milliseconds
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export async function extractTimetableFromImage(
   file: File,
 ): Promise<TimetableEntry[]> {
-  if (!API_KEY) throw new Error("Gemini API key is not configured.");
+  try {
+    console.log("Starting secure cloud extraction...");
 
-  // We only use the one model that we know exists for your key
-  const modelName = "gemini-2.0-flash-exp";
-  const base64Data = await fileToGenerativePart(file);
-  const prompt = "Analyze this timetable image and extract the schedule.";
+    // 1. Convert file to base64
+    const base64Data = await fileToBase64(file);
 
-  // Try up to 3 times with exponential backoff
-  const maxRetries = 3;
+    // 2. Call the Cloud Function
+    // Ensure "extractTimetable" matches the export name in functions/index.js
+    const functions = getFunctions(app);
 
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(`Attempt ${attempt}: Using ${modelName}`);
-
-      const model = genAI.getGenerativeModel({
-        model: modelName,
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: timetableSchema,
-        },
-      });
-
-      const result = await model.generateContent([prompt, base64Data]);
-      const response = await result.response;
-      return JSON.parse(response.text()) as TimetableEntry[];
-    } catch (error: any) {
-      console.warn(`Attempt ${attempt} failed:`, error.message);
-
-      // Check if it's the "Too Many Requests" error
-      if (error.message.includes("429")) {
-        if (attempt === maxRetries) throw error; // Give up on last try
-
-        // The error said "retry in 25s", so we wait 30s to be safe.
-        console.log("Rate limit hit. Waiting 30 seconds before retry...");
-        await wait(30000);
-        continue;
-      }
-
-      // If it's a 404 or other error, don't retry, just throw
-      throw error;
+    // Connect to Emulator if running locally
+    if (location.hostname === "localhost") {
+      // 127.0.0.1 is safer than "localhost" sometimes to avoid IPv6 issues
+      connectFunctionsEmulator(functions, "127.0.0.1", 5001);
     }
-  }
 
-  throw new Error("Failed to extract timetable after multiple attempts.");
+    const extractFunction = httpsCallable(functions, "extractTimetable");
+
+    console.log("Sending to Cloud Function...");
+    const result = await extractFunction({ image: base64Data }); // No generics here
+
+    // Cast the unknown data to our type
+    const data = result.data as TimetableEntry[];
+    console.log("Cloud Function Success:", data);
+    return data;
+  } catch (error: any) {
+    console.error("Cloud extraction failed:", error);
+    throw new Error(error.message || "Failed to extract timetable.");
+  }
 }
 
-async function fileToGenerativePart(file: File) {
-  const base64EncodedDataPromise = new Promise((resolve) => {
+// Simple helper to get base64 string without the "data:image/x;base64," prefix
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve((reader.result as string).split(",")[1]);
     reader.readAsDataURL(file);
+    reader.onload = () => {
+      const result = reader.result as string;
+      // Split to get only the base64 part
+      const base64 = result.split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = (error) => reject(error);
   });
-  return {
-    inlineData: {
-      data: (await base64EncodedDataPromise) as string,
-      mimeType: file.type,
-    },
-  };
 }

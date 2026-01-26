@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SemSync</string>
+    <string name="title_home">Home</string>
+    <string name="title_timetable">Timetable</string>
+    <string name="title_tasks">Tasks</string>
+    <string name="title_ai_chat">AI Chat</string>
 </resources>

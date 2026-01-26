@@ -32,6 +32,8 @@ This represents the mobile channel for the SemSync platform. While the Web App i
 
 ## 👥 Team Roles & Distribution (6 Members)
 
+**Important:** Before starting, everyone must read [STANDARDS_AND_PROTOCOLS.md](STANDARDS_AND_PROTOCOLS.md) to ensure we use the same colors, fonts, and data structures.
+
 **Goal:** Work in parallel. Avoid touching the same XML/Kotlin files.
 
 ### 👷 Member 1: Project Lead & Auth (The Anchor)

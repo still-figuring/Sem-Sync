@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary Palette -->
+    <color name="primary_light">#7066E0</color>
+    <color name="primary_dark">#8C85E6</color>
+
+    <!-- Secondary Palette -->
+    <color name="secondary">#EA4C89</color>
+
+    <!-- Status Colors -->
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+    <color name="destructive">#EF4444</color>
+
+    <!-- Standard Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

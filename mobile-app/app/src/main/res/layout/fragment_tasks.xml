@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
+            android:layout_marginTop="24dp"
             android:background="#1a1a1a">
 
             <TextView
@@ -104,7 +105,7 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@android:drawable/ic_menu_info_details"
+                android:src="@android:drawable/ic_menu_save"
                 android:tint="#666666"
                 android:contentDescription="Empty state" />
 

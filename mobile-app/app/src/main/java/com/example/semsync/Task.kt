@@ -6,7 +6,10 @@ data class Task(
     val id: String = "",
     val userId: String = "",
     val title: String = "",
+    val description: String = "",
+    val courseCode: String = "",
     val completed: Boolean = false,
     val priority: String = "medium",
-    val dueDate: Timestamp? = null
+    val dueDate: Timestamp? = null,
+    val taskType: String = "personal" // "personal" or "academic"
 )

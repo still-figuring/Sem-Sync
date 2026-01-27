@@ -5,7 +5,7 @@ Since we are presenting tomorrow, we cannot rely on complex client-side AI setup
 ## 1. The Endpoint
 
 We are using the HTTP Callable Function or a direct HTTP request.
-Since we set up specific headers in the web app, let's use a standard **HTTP POST** request from Android.
+Since we set up specific head-ers in the web app, let's use a standard **HTTP POST** request from Android.
 
 **Base URL:**
 _(You need to get this from the Firebase Console or `firebase deploy` output. It looks like `https://us-central1-your-project.cloudfunctions.net/api`)_

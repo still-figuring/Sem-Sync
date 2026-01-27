@@ -129,95 +129,31 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
     }
 
     private fun showAddTaskDialog(uid: String) {
-        val dialogView = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(16, 16, 16, 16)
-        }
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_add_task, null)
 
-        // Task Title
-        val titleLabel = android.widget.TextView(requireContext()).apply {
-            text = "Task Title"
-            textSize = 14f
-            setTextColor(android.graphics.Color.WHITE)
-        }
-        dialogView.addView(titleLabel)
+        val inputTaskTitle = dialogView.findViewById<EditText>(R.id.inputTaskTitle)
+        val inputCourseCode = dialogView.findViewById<EditText>(R.id.inputCourseCode)
+        val spinnerPriority = dialogView.findViewById<Spinner>(R.id.spinnerPriority)
+        val inputDueDate = dialogView.findViewById<EditText>(R.id.inputDueDate)
+        val btnDatePicker = dialogView.findViewById<android.widget.ImageButton>(R.id.btnDatePicker)
+        val inputDescription = dialogView.findViewById<EditText>(R.id.inputDescription)
 
-        val titleInput = EditText(requireContext()).apply {
-            hint = "e.g. Complete Calculus Assignment"
-            setHintTextColor(android.graphics.Color.parseColor("#666666"))
-            setTextColor(android.graphics.Color.WHITE)
-            setPadding(12, 8, 12, 8)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = 16 }
+        // Setup Priority Spinner
+        val priorityAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            listOf("Low", "Medium", "High")
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
-        dialogView.addView(titleInput)
-
-        // Course Code
-        val courseLabel = android.widget.TextView(requireContext()).apply {
-            text = "Course Code (Optional)"
-            textSize = 14f
-            setTextColor(android.graphics.Color.WHITE)
-        }
-        dialogView.addView(courseLabel)
-
-        val courseInput = EditText(requireContext()).apply {
-            hint = "e.g. CS101"
-            setHintTextColor(android.graphics.Color.parseColor("#666666"))
-            setTextColor(android.graphics.Color.WHITE)
-            setPadding(12, 8, 12, 8)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = 16 }
-        }
-        dialogView.addView(courseInput)
-
-        // Priority
-        val priorityLabel = android.widget.TextView(requireContext()).apply {
-            text = "Priority"
-            textSize = 14f
-            setTextColor(android.graphics.Color.WHITE)
-        }
-        dialogView.addView(priorityLabel)
-
-        val prioritySpinner = Spinner(requireContext()).apply {
-            adapter = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                listOf("Low", "Medium", "High")
-            ).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            }
-            setSelection(1) // Default to Medium
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = 16 }
-        }
-        dialogView.addView(prioritySpinner)
-
-        // Due Date
-        val dateLabel = android.widget.TextView(requireContext()).apply {
-            text = "Due Date"
-            textSize = 14f
-            setTextColor(android.graphics.Color.WHITE)
-        }
-        dialogView.addView(dateLabel)
+        spinnerPriority.adapter = priorityAdapter
+        spinnerPriority.setSelection(1) // Default to Medium
 
         var selectedDate: Long? = null
-        val dateInput = EditText(requireContext())
-        dateInput.hint = "mm/dd/yyyy"
-        dateInput.setHintTextColor(android.graphics.Color.parseColor("#666666"))
-        dateInput.setTextColor(android.graphics.Color.WHITE)
-        dateInput.setPadding(12, 8, 12, 8)
-        dateInput.isFocusable = false
-        dateInput.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { bottomMargin = 16 }
-        dateInput.setOnClickListener {
+
+        // Date Picker
+        btnDatePicker.setOnClickListener {
             val calendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
@@ -226,7 +162,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
                     selectedCalendar.set(year, month, dayOfMonth)
                     selectedDate = selectedCalendar.timeInMillis
                     val sdf = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-                    dateInput.setText(sdf.format(selectedCalendar.time))
+                    inputDueDate.setText(sdf.format(selectedCalendar.time))
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -234,53 +170,47 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             )
             datePickerDialog.show()
         }
-        dialogView.addView(dateInput)
 
-        // Description
-        val descLabel = android.widget.TextView(requireContext()).apply {
-            text = "Description"
-            textSize = 14f
-            setTextColor(android.graphics.Color.WHITE)
-        }
-        dialogView.addView(descLabel)
-
-        val descInput = EditText(requireContext()).apply {
-            hint = "Add details about this task..."
-            setHintTextColor(android.graphics.Color.parseColor("#666666"))
-            setTextColor(android.graphics.Color.WHITE)
-            setPadding(12, 8, 12, 8)
-            minLines = 3
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        }
-        dialogView.addView(descInput)
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Add New Task")
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
-            .setPositiveButton("Create Task") { _, _ ->
-                val title = titleInput.text.toString()
-                if (title.isNotEmpty()) {
-                    val newTask = hashMapOf(
-                        "title" to title,
-                        "description" to descInput.text.toString(),
-                        "courseCode" to courseInput.text.toString(),
-                        "completed" to false,
-                        "userId" to uid,
-                        "priority" to prioritySpinner.selectedItem.toString().lowercase(),
-                        "dueDate" to if (selectedDate != null) {
-                            com.google.firebase.Timestamp(java.util.Date(selectedDate!!))
-                        } else {
-                            null
-                        },
-                        "taskType" to if (courseInput.text.toString().isNotEmpty()) "academic" else "personal"
-                    )
-                    db.collection("tasks").add(newTask)
-                }
+            .setCancelable(false)
+            .create()
+
+        // Setup buttons
+        val btnCancel = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCancel)
+        val btnCreateTask = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCreateTask)
+        val btnCloseDialog = dialogView.findViewById<android.widget.ImageButton>(R.id.btnCloseDialog)
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnCreateTask.setOnClickListener {
+            val title = inputTaskTitle.text.toString()
+            if (title.isNotEmpty()) {
+                val newTask = hashMapOf(
+                    "title" to title,
+                    "description" to inputDescription.text.toString(),
+                    "courseCode" to inputCourseCode.text.toString(),
+                    "completed" to false,
+                    "userId" to uid,
+                    "priority" to spinnerPriority.selectedItem.toString().lowercase(),
+                    "dueDate" to if (selectedDate != null) {
+                        com.google.firebase.Timestamp(java.util.Date(selectedDate!!))
+                    } else {
+                        null
+                    },
+                    "taskType" to if (inputCourseCode.text.toString().isNotEmpty()) "academic" else "personal"
+                )
+                db.collection("tasks").add(newTask)
+                dialog.dismiss()
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+        }
+
+        dialog.show()
     }
 }

@@ -11,6 +11,7 @@ import com.google.android.material.chip.Chip
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.core.graphics.toColorInt
 
 class TaskAdapter(
     private var tasks: List<Task>,
@@ -74,8 +75,8 @@ class TaskAdapter(
             val isOverdue = dueCalendar < todayCalendar.timeInMillis && !task.completed
             
             if (isOverdue) {
-                holder.textDueDate.setTextColor(android.graphics.Color.parseColor("#ef4444"))
-                holder.textDueDate.text = "🔴 OVERDUE"
+                holder.textDueDate.setTextColor("#ef4444".toColorInt())
+                holder.textDueDate.text = "OVERDUE"
             } else {
                 holder.textDueDate.setTextColor(android.graphics.Color.parseColor("#666666"))
             }

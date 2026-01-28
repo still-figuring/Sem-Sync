@@ -152,8 +152,8 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
 
         var selectedDate: Long? = null
 
-        // Date Picker
-        btnDatePicker.setOnClickListener {
+        // Function to show date picker
+        fun showDatePickerDialog() {
             val calendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
@@ -169,6 +169,16 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
             datePickerDialog.show()
+        }
+
+        // Date Picker - open from button click
+        btnDatePicker.setOnClickListener {
+            showDatePickerDialog()
+        }
+
+        // Date Picker - open from edit field click
+        inputDueDate.setOnClickListener {
+            showDatePickerDialog()
         }
 
         val dialog = AlertDialog.Builder(requireContext())

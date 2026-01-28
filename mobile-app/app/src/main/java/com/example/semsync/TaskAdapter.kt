@@ -9,7 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
+import androidx.core.graphics.toColorInt
 
 class TaskAdapter(
     private var tasks: List<Task>,
@@ -60,6 +62,24 @@ class TaskAdapter(
             val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
             val dateStr = sdf.format(task.dueDate!!.toDate())
             holder.textDueDate.text = dateStr
+            
+            // Check if task is overdue
+            val calendar = Calendar.getInstance()
+            calendar.time = task.dueDate!!.toDate()
+            val dueCalendar = calendar.timeInMillis
+            val todayCalendar = Calendar.getInstance()
+            todayCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            todayCalendar.set(Calendar.MINUTE, 0)
+            todayCalendar.set(Calendar.SECOND, 0)
+            
+            val isOverdue = dueCalendar < todayCalendar.timeInMillis && !task.completed
+            
+            if (isOverdue) {
+                holder.textDueDate.setTextColor("#ef4444".toColorInt())
+                holder.textDueDate.text = "OVERDUE"
+            } else {
+                holder.textDueDate.setTextColor(android.graphics.Color.parseColor("#666666"))
+            }
         }
 
         // Course Code

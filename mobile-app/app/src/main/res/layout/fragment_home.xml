@@ -6,13 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Home Fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/textGreeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Good morning, Student"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textSubGreeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Here is your next class"
+            android:textSize="14sp"
+            android:textColor="#6b7280"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp" />
+
+        <include
+            layout="@layout/next_class_card"
+            android:id="@+id/nextClassCard" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,18 +26,20 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val user = FirebaseAuth.getInstance().currentUser
-        val name = user?.displayName ?: "Student"
-        
-        binding.tvUserName.text = name.split(" ")[0] // First name only
-        binding.tvGreeting.text = getGreeting()
+        // Get the first name of the user, or default to "Student"
+        val name = user?.displayName?.split(" ")?.firstOrNull() ?: "Student"
+
+        // Construct the full greeting string and set it to the single TextView
+        val fullGreeting = "${getGreeting()} $name! Here's what's happening today."
+        binding.tvGreeting.text = fullGreeting
     }
 
     private fun getGreeting(): String {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         return when (hour) {
-            in 0..11 -> "Good Morning,"
-            in 12..16 -> "Good Afternoon,"
-            else -> "Good Evening,"
+            in 0..11 -> "Good morning,"
+            in 12..16 -> "Good afternoon,"
+            else -> "Good evening,"
         }
     }
 

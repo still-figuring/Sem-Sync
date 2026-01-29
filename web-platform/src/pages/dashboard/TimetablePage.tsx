@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { Plus, Sparkles, Upload, Loader2, FileImage } from "lucide-react";
+import { Plus, Sparkles, Loader2 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 import AddCourseDialog from "../../components/timetable/AddCourseDialog";
 import { addCourse, subscribeToCourses } from "../../lib/courses";
@@ -132,7 +132,7 @@ export default function TimetablePage() {
         return addCourse(user.uid, {
           name: entry.subject || "Unknown Course",
           location: entry.room || "TBA",
-          dayOfWeek: dayNumber.toString(),
+          dayOfWeek: dayNumber,
           startTime: entry.startTime || "09:00",
           endTime: entry.endTime || "10:00",
           color: color,

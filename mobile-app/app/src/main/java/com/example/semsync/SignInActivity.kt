@@ -81,13 +81,19 @@ class SignInActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) {
-                if (it.isSuccessful) {
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                    // Handle the specific error where an account exists with a different credential (e.g., Email/Password)
+                    val exception = task.exception
+                    if (exception is com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                        Toast.makeText(this, "Account uses Email/Password. Please log in with password.", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(this, "Authentication Failed: ${exception?.localizedMessage}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
     }

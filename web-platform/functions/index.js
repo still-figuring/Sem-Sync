@@ -131,3 +131,43 @@ exports.extractTimetable = onCall(
     );
   },
 );
+
+exports.chat = onCall({ cors: true, timeoutSeconds: 60 }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User must be logged in");
+  }
+
+  const { message, history } = request.data;
+  if (!message) {
+    throw new HttpsError("invalid-argument", "Message is required");
+  }
+
+  if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new HttpsError("internal", "API Key missing");
+    genAI = new GoogleGenerativeAI(apiKey);
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+    // Convert history format if necessary
+    // Gemini expects { role: "user" | "model", parts: [{ text: "..." }] }
+    // Mobile app sends { role: "user" | "model", message: "..." }
+    const formattedHistory = (history || []).map((msg) => ({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.message }],
+    }));
+
+    const chat = model.startChat({
+      history: formattedHistory,
+    });
+
+    const result = await chat.sendMessage(message);
+    const response = await result.response;
+    return { response: response.text() };
+  } catch (error) {
+    logger.error("Chat error", error);
+    throw new HttpsError("internal", "Failed to generate response");
+  }
+});

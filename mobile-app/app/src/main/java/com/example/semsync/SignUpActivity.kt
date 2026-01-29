@@ -69,7 +69,13 @@ class SignUpActivity : AppCompatActivity() {
                             Toast.makeText(this, "Error saving user data: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        // Handle potential errors nicely
+                        val exception = it.exception
+                        if (exception is com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                            Toast.makeText(this, "Account with this email already exists. Please Sign In.", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(this, "Sign Up Failed: ${exception?.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             } else {
@@ -100,13 +106,34 @@ class SignUpActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) {
-                if (it.isSuccessful) {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Check if new user -> create Firestore entry if needed
+                    val user = firebaseAuth.currentUser
+                    val docRef = firestore.collection("users").document(user!!.uid)
+                    docRef.get().addOnSuccessListener { document ->
+                        if (!document.exists()) {
+                            // If this is a new Google user, create their profile
+                            val userMap = hashMapOf(
+                                "displayName" to (user.displayName ?: "Student"),
+                                "email" to (user.email ?: ""),
+                                "role" to "Student", // Default role for Google Sign Up
+                                "university" to ""
+                            )
+                            docRef.set(userMap)
+                        }
+                        // Navigate to Main
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
-                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                     val exception = task.exception
+                    if (exception is com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                        Toast.makeText(this, "Account uses Email/Password. Please log in with password.", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(this, "Authentication Failed: ${exception?.localizedMessage}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
     }

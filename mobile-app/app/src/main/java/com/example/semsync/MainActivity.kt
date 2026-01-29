@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.semsync.databinding.ActivityMainBinding
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.PersistentCacheSettings
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,10 +17,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Enable Firestore offline persistence with the modern KTX method
-        Firebase.firestore.firestoreSettings = firestoreSettings {
-            isPersistenceEnabled = true
-        }
+        // Enable Firestore offline persistence (Modern method)
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
+            .build()
+        Firebase.firestore.firestoreSettings = settings
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.example.semsync.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -23,21 +22,29 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Hardcoded UI for the Next Class card (replace with real data later)
+        
+        // Display greeting with hardcoded user name
         binding.textGreeting.text = "Good morning, Alex"
         binding.textSubGreeting.text = "Here's your next class"
+        
+        // Hardcoded next class data (will be replaced with real Firestore data from Member 6)
+        val nextClass = Lesson(
+            code = "ICS 2200",
+            title = "Introduction to Software Engineering",
+            day = "Monday",
+            startTime = "08:00",
+            endTime = "10:00",
+            location = "Lab 1"
+        )
+        
+        displayNextClass(nextClass)
+    }
 
-        val root = binding.root
-        val code = root.findViewById<TextView>(R.id.textCourseCode)
-        val title = root.findViewById<TextView>(R.id.textCourseTitle)
-        val time = root.findViewById<TextView>(R.id.textTimeRange)
-        val location = root.findViewById<TextView>(R.id.textLocation)
-
-        code.text = "ICS 2200"
-        title.text = "Introduction to Software"
-        time.text = "08:00 - 10:00"
-        location.text = "Lab 1"
+    private fun displayNextClass(lesson: Lesson) {
+        binding.nextClassCard.textCourseCode.text = lesson.code
+        binding.nextClassCard.textCourseTitle.text = lesson.title
+        binding.nextClassCard.textTimeRange.text = "${lesson.startTime} - ${lesson.endTime}"
+        binding.nextClassCard.textLocation.text = lesson.location
     }
 
     override fun onDestroyView() {

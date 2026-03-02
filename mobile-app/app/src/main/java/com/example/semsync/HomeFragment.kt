@@ -5,12 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.example.semsync.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,11 +26,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Display greeting with hardcoded user name
-        binding.textGreeting.text = "Good morning, Alex"
+        // Observe user greeting from ViewModel
+        viewModel.greetingText.observe(viewLifecycleOwner) { greeting ->
+            binding.textGreeting.text = greeting
+        }
+        
+        // Display next class with hardcoded data (will be replaced with real data later)
         binding.textSubGreeting.text = "Here's your next class"
         
-        // Hardcoded next class data (will be replaced with real Firestore data from Member 6)
         val nextClass = Lesson(
             code = "ICS 2200",
             title = "Introduction to Software Engineering",

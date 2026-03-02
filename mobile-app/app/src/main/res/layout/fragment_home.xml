@@ -54,6 +54,11 @@
                 layout="@layout/next_class_card"
                 android:id="@+id/nextClassCard" />
 
+            <!-- Due Soon Card -->
+            <include
+                layout="@layout/due_soon_card"
+                android:id="@+id/dueSoonCard" />
+
         </LinearLayout>
 
     </ScrollView>

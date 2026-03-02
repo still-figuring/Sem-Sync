@@ -1,18 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AiChatFragment">
+    android:background="@color/white">
 
-    <TextView
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="#FAFAFA"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SemSync AI"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginStart="12dp" />
+    </LinearLayout>
+    
+    <!-- Chat List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:reverseLayout="false"
+        app:stackFromEnd="true"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/llHeader"
+        app:layout_constraintBottom_toTopOf="@id/llInput" />
+
+    <!-- Loading Indicator (Hidden by default) -->
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="AI Chat Fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/llInput"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" 
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Input Area -->
+    <LinearLayout
+        android:id="@+id/llInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="#F0F0F0"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Ask about your lectures..."
+            android:padding="12dp"
+            android:background="@android:color/transparent"
+            android:maxLines="3"
+            android:inputType="textCapSentences|textMultiLine" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_send"
+            app:backgroundTint="@color/primary_light"
+            app:fabSize="mini"
+            app:elevation="0dp"
+            app:tint="@color/white" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

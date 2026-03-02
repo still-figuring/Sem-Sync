@@ -15,7 +15,6 @@ import {
   BookOpen,
   AlertCircle,
   CheckCircle,
-  Clock,
   ArrowRight,
 } from "lucide-react";
 
@@ -103,7 +102,7 @@ export default function InstructorDashboard() {
         user.displayName || "Instructor",
         content,
         "announcement",
-        additionalData
+        additionalData,
       );
 
       // Reset form

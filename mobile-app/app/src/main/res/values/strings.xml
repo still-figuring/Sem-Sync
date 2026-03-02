@@ -3,5 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_timetable">Timetable</string>
     <string name="title_tasks">Tasks</string>
+    <string name="title_groups">Groups</string>
+    <string name="title_notebook">Notes</string>
     <string name="title_ai_chat">AI Chat</string>
 </resources>

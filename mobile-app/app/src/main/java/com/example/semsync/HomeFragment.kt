@@ -31,6 +31,16 @@ class HomeFragment : Fragment() {
             binding.textGreeting.text = greeting
         }
         
+        // Observe due soon summary from ViewModel
+        viewModel.dueSoonSummary.observe(viewLifecycleOwner) { summary ->
+            binding.dueSoonCard.textDueSoonSummary.text = summary
+        }
+        
+        // Observe upcoming task count from ViewModel
+        viewModel.upcomingTaskCount.observe(viewLifecycleOwner) { count ->
+            binding.dueSoonCard.textTaskCount.text = count.toString()
+        }
+        
         // Display next class with hardcoded data (will be replaced with real data later)
         binding.textSubGreeting.text = "Here's your next class"
         

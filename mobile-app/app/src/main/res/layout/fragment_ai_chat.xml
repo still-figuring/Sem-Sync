@@ -4,28 +4,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chatBackground">
+    android:background="?attr/colorSurface">
 
     <!-- ── Header ──────────────────────────────────────────────────────── -->
+
+    <!-- ── Message list ─────────────────────────────────────────────────── -->
+
     <LinearLayout
         android:id="@+id/headerBar"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:background="chatBackground"
+        android:layout_marginTop="32dp"
+        android:background="@color/primary_light"
+        android:elevation="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:src="@drawable/ic_ai_chat"
-            android:importantForAccessibility="no" />
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_ai_chat" />
 
         <TextView
             android:layout_width="0dp"
@@ -47,11 +52,11 @@
 
     </LinearLayout>
 
-    <!-- ── Message list ─────────────────────────────────────────────────── -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMessages"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="?attr/colorSurface"
         android:clipToPadding="false"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
@@ -66,7 +71,7 @@
         android:id="@+id/inputBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/inputBarBackground"
+        android:background="@color/dark_grey"
         android:elevation="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -94,7 +99,7 @@
                 android:id="@+id/etInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
+                android:background="@drawable/bg_input"
                 android:hint="@string/ai_input_hint"
                 android:imeOptions="actionSend"
                 android:inputType="textMultiLine|textCapSentences"
@@ -103,7 +108,9 @@
                 android:paddingEnd="16dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/dark_grey"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

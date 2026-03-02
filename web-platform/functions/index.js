@@ -1,4 +1,5 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
@@ -8,7 +9,10 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 require("dotenv").config({ path: path.resolve(__dirname, "../.env.local") });
 
-admin.initializeApp();
+// Initialize Admin SDK once
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
 
 let genAI;
 
@@ -138,6 +142,7 @@ exports.chat = onCall({ cors: true, timeoutSeconds: 60 }, async (request) => {
   }
 
   const { message, history } = request.data;
+  const uid = request.auth.uid;
   if (!message) {
     throw new HttpsError("invalid-argument", "Message is required");
   }
@@ -149,18 +154,68 @@ exports.chat = onCall({ cors: true, timeoutSeconds: 60 }, async (request) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // 1. Fetch User Context (Parallel)
+    const db = admin.firestore();
+    let systemContext = "";
 
-    // Convert history format if necessary
-    // Gemini expects { role: "user" | "model", parts: [{ text: "..." }] }
-    // Mobile app sends { role: "user" | "model", message: "..." }
+    try {
+      const [coursesSnap, tasksSnap, notesSnap] = await Promise.all([
+        db.collection(`users/${uid}/courses`).get(),
+        db
+          .collection("tasks")
+          .where("userId", "==", uid)
+          .where("status", "!=", "done")
+          .get(),
+        db
+          .collection(`users/${uid}/notes`)
+          .orderBy("createdAt", "desc")
+          .limit(3)
+          .get(),
+      ]);
+
+      const courses = coursesSnap.docs
+        .map(
+          (d) =>
+            `${d.data().code} (${d.data().name}) on Keep Day ${d.data().dayOfWeek}, ${d.data().startTime}`,
+        )
+        .join("; ");
+      const tasks = tasksSnap.docs.map((d) => `- ${d.data().title}`).join("\n");
+      const notes = notesSnap.docs
+        .map(
+          (d) =>
+            `Note '${d.data().title}': ${d.data().content?.substring(0, 50)}...`,
+        )
+        .join("\n");
+
+      systemContext = `
+          Current Date/Time: ${new Date().toString()}
+          USER DATA:
+          [TIMETABLE]: ${courses || "None"}
+          [TASKS]: ${tasks || "None"}
+          [recent NOTES]: ${notes || "None"}
+          Use this data to answer questions about 'next class', 'what is due', etc. If asked unrelated questions, ignore this context.
+        `;
+    } catch (e) {
+      logger.warn("Context fetch failed", e);
+    }
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Convert history format
     const formattedHistory = (history || []).map((msg) => ({
       role: msg.role === "user" ? "user" : "model",
       parts: [{ text: msg.message }],
     }));
 
+    // Inject system prompt as the first exchange if context matches
+    const finalHistory = [
+      { role: "user", parts: [{ text: "System Context: " + systemContext }] },
+      { role: "model", parts: [{ text: "Context received." }] },
+      ...formattedHistory,
+    ];
+
     const chat = model.startChat({
-      history: formattedHistory,
+      history: finalHistory,
     });
 
     const result = await chat.sendMessage(message);
@@ -168,6 +223,44 @@ exports.chat = onCall({ cors: true, timeoutSeconds: 60 }, async (request) => {
     return { response: response.text() };
   } catch (error) {
     logger.error("Chat error", error);
-    throw new HttpsError("internal", "Failed to generate response");
+    throw new HttpsError(
+      "internal",
+      "Failed to generate response " + error.message,
+    );
   }
 });
+
+/**
+ * Trigger: Send FCM notification when a post is created
+ */
+exports.sendNewPostNotification = onDocumentCreated(
+  "groups/{groupId}/posts/{postId}",
+  async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
+
+    const post = snapshot.data();
+    const groupId = event.params.groupId;
+    const authorName = post.authorName || "Someone";
+
+    // Create Notification Payload
+    const message = {
+      notification: {
+        title: `New Post in Group`,
+        body: `${authorName}: ${post.content ? post.content.substring(0, 50) : "New attachment"}`,
+      },
+      topic: `group_${groupId}`, // Subscribed by mobile app
+      data: {
+        groupId: groupId,
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+      },
+    };
+
+    try {
+      await admin.messaging().send(message);
+      logger.info(`Notification sent to topic group_${groupId}`);
+    } catch (error) {
+      logger.error("Error sending notification", error);
+    }
+  },
+);

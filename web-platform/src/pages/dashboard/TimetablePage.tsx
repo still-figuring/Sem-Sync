@@ -131,6 +131,7 @@ export default function TimetablePage() {
 
         return addCourse(user.uid, {
           name: entry.subject || "Unknown Course",
+          code: entry.subject?.split(" ").slice(0, 2).join("") || "UNKNOWN",
           location: entry.room || "TBA",
           dayOfWeek: dayNumber,
           startTime: entry.startTime || "09:00",

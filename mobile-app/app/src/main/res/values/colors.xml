@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Primary Palette -->
+    <color name="primary">#7066E0</color> <!-- Added this line -->
     <color name="primary_light">#7066E0</color>
     <color name="primary_dark">#8C85E6</color>
 

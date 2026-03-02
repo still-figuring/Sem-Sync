@@ -47,7 +47,7 @@ export default function GroupsPage() {
             className="flex-1 sm:flex-none inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-card border border-border text-foreground hover:bg-muted h-10 px-4 py-2"
           >
             <Hash className="mr-2 h-4 w-4" />
-            Join Class
+            Join Course
           </button>
           <button
             onClick={() => setIsCreateOpen(true)}

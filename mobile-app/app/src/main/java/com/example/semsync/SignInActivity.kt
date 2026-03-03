@@ -14,6 +14,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
+@Suppress("DEPRECATION")
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
@@ -71,6 +72,7 @@ class SignInActivity : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
+                // Corrected the typo from .. to .
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 Toast.makeText(this, "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -81,13 +83,19 @@ class SignInActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) {
-                if (it.isSuccessful) {
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                    // Handle the specific error where an account exists with a different credential (e.g., Email/Password)
+                    val exception = task.exception
+                    if (exception is com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                        Toast.makeText(this, "Account uses Email/Password. Please log in with password.", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(this, "Authentication Failed: ${exception?.localizedMessage}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
     }

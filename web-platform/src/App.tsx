@@ -2,9 +2,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./lib/firebase";
-import { getUserProfile } from "./lib/auth";
+import { getUserProfile, createUserProfile } from "./lib/auth";
 import { useAuthStore } from "./store/authStore";
 import { ThemeProvider } from "./hooks/useTheme";
+import type { UserProfile } from "./types";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -27,15 +28,39 @@ function App() {
   const { setUser, setIsLoading } = useAuthStore();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setIsLoading(true);
-      if (user) {
+      if (firebaseUser) {
         try {
-          const profile = await getUserProfile(user.uid);
+          let profile = await getUserProfile(firebaseUser.uid);
+
+          // RECOVERY: If Auth exists but Firestore profile is missing
+          if (!profile) {
+            console.warn("User profile missing. Creating default profile...");
+            const newProfile: Omit<UserProfile, "uid"> = {
+              email: firebaseUser.email || "",
+              displayName: firebaseUser.displayName || "Student",
+              role: "student",
+              createdAt: Date.now(),
+            };
+            await createUserProfile(firebaseUser.uid, newProfile);
+            profile = { uid: firebaseUser.uid, ...newProfile };
+          }
+
+          // COMPATIBILITY: Fix Capitalized roles from Mobile App
+          if (profile && profile.role) {
+            const normalizedRole = profile.role.toLowerCase() as
+              | "student"
+              | "instructor";
+            if (profile.role !== normalizedRole) {
+              profile.role = normalizedRole;
+            }
+          }
+
           setUser(profile);
         } catch (error) {
           console.error("Error fetching user profile:", error);
-          setUser(null);
+          setUser(null); // Force logout on critical error
         }
       } else {
         setUser(null);

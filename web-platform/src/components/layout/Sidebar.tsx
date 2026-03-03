@@ -15,6 +15,8 @@ import {
 import { cn } from "../../lib/utils";
 import { useAuthStore } from "../../store/authStore";
 import { auth } from "../../lib/firebase";
+import { subscribeToTasks } from "../../lib/tasks";
+import { useState, useEffect } from "react";
 
 interface SidebarProps {
   open: boolean;
@@ -23,11 +25,26 @@ interface SidebarProps {
 
 export default function Sidebar({ open, setOpen }: SidebarProps) {
   const { user } = useAuthStore();
+  const [pendingTaskCount, setPendingTaskCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = subscribeToTasks(user.uid, (tasks) => {
+      const count = tasks.filter((t) => t.status !== "done").length;
+      setPendingTaskCount(count);
+    });
+    return () => unsubscribe();
+  }, [user]);
 
   const mainNavigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Timetable", href: "/timetable", icon: CalendarDays },
-    { name: "Tasks", href: "/tasks", icon: CheckSquare, badge: 5 },
+    {
+      name: "Tasks",
+      href: "/tasks",
+      icon: CheckSquare,
+      badge: pendingTaskCount > 0 ? pendingTaskCount : undefined,
+    },
     { name: "Notes", href: "/notebook", icon: BookText },
   ];
 
@@ -56,7 +73,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       <div
         className={cn(
           "fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-opacity lg:hidden",
-          open ? "opacity-100" : "pointer-events-none opacity-0"
+          open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={() => setOpen(false)}
       />
@@ -65,7 +82,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-72 transform bg-card border-r border-border transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 flex flex-col",
-          open ? "translate-x-0" : "-translate-x-full"
+          open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Logo Header */}
@@ -123,7 +140,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
                     isActive
                       ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
                   )
                 }
               >
@@ -134,7 +151,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                         "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
                         isActive
                           ? "bg-white/20"
-                          : "bg-primary/10 group-hover:bg-primary/20"
+                          : "bg-primary/10 group-hover:bg-primary/20",
                       )}
                     >
                       <item.icon className="h-4 w-4" />
@@ -168,7 +185,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
                     isActive
                       ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
                   )
                 }
               >
@@ -179,7 +196,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                         "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
                         isActive
                           ? "bg-white/20"
-                          : "bg-primary/10 group-hover:bg-primary/20"
+                          : "bg-primary/10 group-hover:bg-primary/20",
                       )}
                     >
                       <item.icon className="h-4 w-4" />
@@ -210,7 +227,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                         "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
                         isActive
                           ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                          : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1"
+                          : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
                       )
                     }
                   >
@@ -221,7 +238,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                             "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
                             isActive
                               ? "bg-white/20"
-                              : "bg-primary/10 group-hover:bg-primary/20"
+                              : "bg-primary/10 group-hover:bg-primary/20",
                           )}
                         >
                           <item.icon className="h-4 w-4" />
@@ -252,7 +269,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
                     isActive
                       ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
                   )
                 }
               >
@@ -263,7 +280,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                         "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
                         isActive
                           ? "bg-white/20"
-                          : "bg-primary/10 group-hover:bg-primary/20"
+                          : "bg-primary/10 group-hover:bg-primary/20",
                       )}
                     >
                       <item.icon className="h-4 w-4" />

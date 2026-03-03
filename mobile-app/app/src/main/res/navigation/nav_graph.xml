@@ -25,4 +25,31 @@
         android:name="com.example.semsync.AiChatFragment"
         android:label="fragment_ai_chat"
         tools:layout="@layout/fragment_ai_chat" />
+    <fragment
+        android:id="@+id/navigation_groups"
+        android:name="com.example.semsync.GroupsFragment"
+        android:label="GroupsFragment"
+        tools:layout="@layout/fragment_groups" />
+    <fragment
+        android:id="@+id/navigation_group_detail"
+        android:name="com.example.semsync.GroupDetailFragment"
+        android:label="fragment_group_detail"
+        tools:layout="@layout/fragment_group_detail" >
+        <argument
+            android:name="groupId"
+            app:argType="string" />
+        <argument
+            android:name="groupName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_notebook"
+        android:name="com.example.semsync.NotebookFragment"
+        android:label="NotebookFragment"
+        tools:layout="@layout/fragment_notebook" />
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.semsync.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

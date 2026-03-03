@@ -3,6 +3,10 @@ import { useTheme } from "../../hooks/useTheme";
 import { useLocation } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import NotificationsDropdown from "../notifications/NotificationsDropdown";
+import { useState } from "react";
+import AddTaskDialog from "../tasks/AddTaskDialog";
+import { useAuthStore } from "../../store/authStore";
+import { addTask } from "../../lib/tasks";
 
 interface TopNavProps {
   onMenuClick: () => void;
@@ -21,6 +25,14 @@ const pageTitles: Record<string, string> = {
 export default function TopNav({ onMenuClick }: TopNavProps) {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const { user } = useAuthStore();
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+
+  const handleCreateTask = async (taskData: any) => {
+    if (!user) return;
+    await addTask(user.uid, taskData);
+    setIsTaskDialogOpen(false);
+  };
 
   // Get page title from path (handle dynamic routes like /groups/:id)
   const pathBase = "/" + location.pathname.split("/")[1];
@@ -51,11 +63,12 @@ export default function TopNav({ onMenuClick }: TopNavProps) {
             <button
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-semibold transition-all",
-                "bg-background text-foreground shadow-sm"
+                "bg-background text-foreground shadow-sm",
               )}
             >
               Overview
             </button>
+            {/* 
             <button
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-semibold transition-all",
@@ -71,7 +84,8 @@ export default function TopNav({ onMenuClick }: TopNavProps) {
               )}
             >
               Activity
-            </button>
+            </button> 
+            */}
           </div>
         </div>
 
@@ -96,13 +110,21 @@ export default function TopNav({ onMenuClick }: TopNavProps) {
           {/* Notifications Dropdown */}
           <NotificationsDropdown />
 
-          {/* New Task Button (Desktop only) */}
-          <button className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-purple-500 text-white font-semibold text-sm shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all">
+          <button
+            onClick={() => setIsTaskDialogOpen(true)}
+            className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-purple-500 text-white font-semibold text-sm shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all"
+          >
             <span className="text-base">+</span>
             New Task
           </button>
         </div>
       </div>
+
+      <AddTaskDialog
+        open={isTaskDialogOpen}
+        onOpenChange={setIsTaskDialogOpen}
+        onAddTask={handleCreateTask}
+      />
     </header>
   );
 }

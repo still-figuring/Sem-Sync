@@ -1,4 +1,4 @@
-# SemSync Mobile Application — Project Report
+# SemSync Mobile Application Project Report
 
 **Course:** ICS 2300 — Mobile Applications Design and Development
 **Assignment:** Group Assignment — Mobile Application Design and Development Project
@@ -27,7 +27,7 @@
 
 ### 1.1 Background
 
-University students in Kenya and across the developing world face a recurring challenge every semester: managing an increasingly complex academic workload using fragmented, generic tools. A typical student juggles 6–8 courses per semester, each with its own lecture schedule, assignment deadlines, CAT dates, and exam timetables — often communicated through informal WhatsApp groups where critical messages are easily buried under hundreds of unrelated chats.
+University students in Kenya and across the developing world face a recurring challenge every semester: managing an increasingly complex academic workload using fragmented, generic tools. A typical student juggles 6–8 courses per semester, each with its own lecture schedule, assignment deadlines, CAT dates, and exam timetables often communicated through informal WhatsApp groups where critical messages are easily buried under hundreds of unrelated chats.
 
 ### 1.2 Problem Statement
 

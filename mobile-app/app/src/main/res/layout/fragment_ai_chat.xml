@@ -15,7 +15,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginTop="32dp"
-        android:background="@color/primary_light"
+        android:background="@color/primary_alt"
         android:elevation="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -71,7 +71,7 @@
         android:id="@+id/inputBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/dark_grey"
+        android:background="@color/textInputColor"
         android:elevation="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -110,7 +110,7 @@
                 android:paddingBottom="10dp"
                 android:textSize="15sp"
                 android:textColor="@android:color/white"
-                android:textColorHint="@color/dark_grey"/>
+                android:textColorHint="@color/light_gray"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

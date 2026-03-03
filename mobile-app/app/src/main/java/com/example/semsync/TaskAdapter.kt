@@ -16,7 +16,8 @@ import androidx.core.graphics.toColorInt
 class TaskAdapter(
     private var tasks: List<Task>,
     private val onCheckedChange: (Task, Boolean) -> Unit,
-    private val onDelete: (Task) -> Unit
+    private val onDelete: (Task) -> Unit,
+    private val onEdit: (Task) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -37,6 +38,12 @@ class TaskAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasks[position]
+        
+        // Click listener for editing task
+        holder.itemView.setOnClickListener {
+            onEdit(task)
+        }
+        
         holder.title.text = task.title
 
         // Description

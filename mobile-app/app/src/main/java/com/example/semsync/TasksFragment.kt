@@ -48,6 +48,9 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             },
             onDelete = { task ->
                 db.collection("tasks").document(task.id).delete()
+            },
+            onEdit = { task ->
+                showEditTaskDialog(task)
             }
         )
         recyclerView.adapter = adapter
@@ -217,6 +220,130 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
                     "taskType" to if (inputCourseCode.text.toString().isNotEmpty()) "academic" else "personal"
                 )
                 db.collection("tasks").add(newTask)
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showEditTaskDialog(task: Task) {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_add_task, null)
+
+        val inputTaskTitle = dialogView.findViewById<EditText>(R.id.inputTaskTitle)
+        val inputCourseCode = dialogView.findViewById<EditText>(R.id.inputCourseCode)
+        val spinnerPriority = dialogView.findViewById<Spinner>(R.id.spinnerPriority)
+        val inputDueDate = dialogView.findViewById<EditText>(R.id.inputDueDate)
+        val btnDatePicker = dialogView.findViewById<android.widget.ImageButton>(R.id.btnDatePicker)
+        val inputDescription = dialogView.findViewById<EditText>(R.id.inputDescription)
+        val headerTitle = dialogView.findViewById<TextView>(R.id.header_title)
+        val headerSubtitle = dialogView.findViewById<TextView>(R.id.header_subtitle)
+
+        // Update dialog header
+        headerTitle.text = "Edit Task"
+        headerSubtitle.text = "Update your task details."
+
+        // Pre-fill fields with existing task data
+        inputTaskTitle.setText(task.title)
+        inputCourseCode.setText(task.courseCode)
+        inputDescription.setText(task.description)
+
+        // Setup Priority Spinner
+        val priorityAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            listOf("Low", "Medium", "High")
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spinnerPriority.adapter = priorityAdapter
+        spinnerPriority.setSelection(
+            when (task.priority.lowercase()) {
+                "high" -> 2
+                "medium" -> 1
+                else -> 0
+            }
+        )
+
+        var selectedDate: Long? = null
+
+        // Pre-fill due date if exists
+        if (task.dueDate != null) {
+            val sdf = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+            inputDueDate.setText(sdf.format(task.dueDate!!.toDate()))
+            selectedDate = task.dueDate!!.toDate().time
+        }
+
+        // Function to show date picker
+        fun showDatePickerDialog() {
+            val calendar = Calendar.getInstance()
+            if (task.dueDate != null) {
+                calendar.time = task.dueDate!!.toDate()
+            }
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val selectedCalendar = Calendar.getInstance()
+                    selectedCalendar.set(year, month, dayOfMonth)
+                    selectedDate = selectedCalendar.timeInMillis
+                    val sdf = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+                    inputDueDate.setText(sdf.format(selectedCalendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
+        }
+
+        // Date Picker - open from button click
+        btnDatePicker.setOnClickListener {
+            showDatePickerDialog()
+        }
+
+        // Date Picker - open from edit field click
+        inputDueDate.setOnClickListener {
+            showDatePickerDialog()
+        }
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        // Setup buttons
+        val btnCancel = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCancel)
+        val btnCreateTask = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCreateTask)
+        val btnCloseDialog = dialogView.findViewById<android.widget.ImageButton>(R.id.btnCloseDialog)
+
+        // Change button text for edit
+        btnCreateTask.text = "Save Changes"
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnCreateTask.setOnClickListener {
+            val title = inputTaskTitle.text.toString()
+            if (title.isNotEmpty()) {
+                val updatedTask = hashMapOf(
+                    "title" to title,
+                    "description" to inputDescription.text.toString(),
+                    "courseCode" to inputCourseCode.text.toString(),
+                    "priority" to spinnerPriority.selectedItem.toString().lowercase(),
+                    "dueDate" to if (selectedDate != null) {
+                        com.google.firebase.Timestamp(java.util.Date(selectedDate!!))
+                    } else {
+                        null
+                    },
+                    "taskType" to if (inputCourseCode.text.toString().isNotEmpty()) "academic" else "personal"
+                )
+                db.collection("tasks").document(task.id).update(updatedTask as Map<String, Any>)
                 dialog.dismiss()
             }
         }

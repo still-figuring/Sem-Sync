@@ -53,6 +53,9 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    // ViewModel & LiveData
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     // Google Sign-In
     implementation(libs.play.services.auth)

@@ -35,20 +35,20 @@ University students in Kenya and across the developing world face a recurring ch
 
 Students currently rely on a patchwork of tools:
 
-| Current Tool | Limitation |
-|-------------|------------|
-| **WhatsApp Groups** | Announcements are buried in casual conversations. No structure, no search, no scheduling integration. Critical messages about postponed classes or moved CATs are missed. |
-| **Google Calendar** | Generic — lacks course code awareness, academic task types (CATs, assignments, exams), or group-based scheduling. Students must manually enter every event. |
-| **Paper Timetables** | Static. When a class is postponed or a room is changed, the student doesn't know until they arrive at an empty venue. |
-| **Individual Note-Taking Apps** | Notes are siloed. No link to course schedules or group context. |
-| **Class Rep Communication** | Depends on a single person broadcasting via WhatsApp or word-of-mouth. No auditable trail of announcements. |
+| Current Tool                    | Limitation                                                                                                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WhatsApp Groups**             | Announcements are buried in casual conversations. No structure, no search, no scheduling integration. Critical messages about postponed classes or moved CATs are missed. |
+| **Google Calendar**             | Generic — lacks course code awareness, academic task types (CATs, assignments, exams), or group-based scheduling. Students must manually enter every event.               |
+| **Paper Timetables**            | Static. When a class is postponed or a room is changed, the student doesn't know until they arrive at an empty venue.                                                     |
+| **Individual Note-Taking Apps** | Notes are siloed. No link to course schedules or group context.                                                                                                           |
+| **Class Rep Communication**     | Depends on a single person broadcasting via WhatsApp or word-of-mouth. No auditable trail of announcements.                                                               |
 
 ### 1.3 Significance
 
 This problem is significant for several reasons:
 
 1. **Academic Performance Impact:** Missed deadlines and unattended classes directly reduce student grades. A 2023 survey of Strathmore University students found that 34% had missed at least one CAT deadline due to miscommunication.
-2. **Mental Load:** Students spend significant cognitive effort simply *tracking* what needs to be done, rather than *doing* it. Context-switching between WhatsApp, calendars, and note apps creates unnecessary friction.
+2. **Mental Load:** Students spend significant cognitive effort simply _tracking_ what needs to be done, rather than _doing_ it. Context-switching between WhatsApp, calendars, and note apps creates unnecessary friction.
 3. **Scalability of Communication:** As class sizes grow (100+ students per course), the informal WhatsApp-based communication model breaks down. Important messages from class representatives are lost.
 4. **Instructor Disconnect:** Lecturers have no reliable channel to push last-minute schedule changes to students' phones. Email is slow, and not all students check it regularly.
 
@@ -82,17 +82,17 @@ Requirements were gathered through three methods:
 
 #### Key User Stories
 
-| # | As a... | I want to... | So that... |
-|---|---------|-------------|------------|
-| US-1 | Student | See today's remaining classes and upcoming tasks on one screen | I can plan my day without checking multiple apps |
-| US-2 | Student | Join my class group with a short code | I automatically get announcements and have the schedule populated |
-| US-3 | Class Rep | Create a post in the group | All members are notified instantly on their phones |
-| US-4 | Class Rep | Add academic units with lecture schedules | Members see those classes in their personal timetable automatically |
-| US-5 | Student | Create personal tasks with priorities and due dates | I can track my assignments alongside group assessments |
-| US-6 | Student | Receive push notifications when a new post appears | I never miss a class postponement or deadline change |
-| US-7 | Student | View all recent announcements from all my groups | I have a single notification feed instead of checking each group |
-| US-8 | Student | Ask an AI assistant questions about my schedule | I get quick answers without navigating through the app |
-| US-9 | Student | View my notes in the app | I have a quick reference for lecture summaries |
+| #    | As a...   | I want to...                                                   | So that...                                                          |
+| ---- | --------- | -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| US-1 | Student   | See today's remaining classes and upcoming tasks on one screen | I can plan my day without checking multiple apps                    |
+| US-2 | Student   | Join my class group with a short code                          | I automatically get announcements and have the schedule populated   |
+| US-3 | Class Rep | Create a post in the group                                     | All members are notified instantly on their phones                  |
+| US-4 | Class Rep | Add academic units with lecture schedules                      | Members see those classes in their personal timetable automatically |
+| US-5 | Student   | Create personal tasks with priorities and due dates            | I can track my assignments alongside group assessments              |
+| US-6 | Student   | Receive push notifications when a new post appears             | I never miss a class postponement or deadline change                |
+| US-7 | Student   | View all recent announcements from all my groups               | I have a single notification feed instead of checking each group    |
+| US-8 | Student   | Ask an AI assistant questions about my schedule                | I get quick answers without navigating through the app              |
+| US-9 | Student   | View my notes in the app                                       | I have a quick reference for lecture summaries                      |
 
 ### 2.2 Information Architecture
 
@@ -141,13 +141,13 @@ The following design principles guided the interface:
 
 ### 2.4 Navigation Design
 
-| Navigation Element | Type | Destinations |
-|-------------------|------|-------------|
-| Bottom Navigation Bar | Primary | Home, Timetable, Tasks, Groups, Notes, AI Chat (6 items) |
-| Top App Bar Action | Secondary | AI Chat (overflow icon) |
-| Dashboard Quick Links | Tertiary | Calendar (→ Timetable), Tasks (→ Tasks), Notes (→ Notebook) |
-| Notifications Bell | Action Button | → NotificationsFragment |
-| Group Card Click | Navigation | → GroupDetailFragment (with groupId, groupName args) |
+| Navigation Element    | Type          | Destinations                                                |
+| --------------------- | ------------- | ----------------------------------------------------------- |
+| Bottom Navigation Bar | Primary       | Home, Timetable, Tasks, Groups, Notes, AI Chat (6 items)    |
+| Top App Bar Action    | Secondary     | AI Chat (overflow icon)                                     |
+| Dashboard Quick Links | Tertiary      | Calendar (→ Timetable), Tasks (→ Tasks), Notes (→ Notebook) |
+| Notifications Bell    | Action Button | → NotificationsFragment                                     |
+| Group Card Click      | Navigation    | → GroupDetailFragment (with groupId, groupName args)        |
 
 ### 2.5 Data Model Design
 
@@ -175,11 +175,13 @@ Firestore Collections:
 ### 3.1 Project Setup and Configuration
 
 **Step 1: Android Project Initialization**
+
 - Created a new Android Studio project targeting API 24 (Android 7.0 Nougat) for broad device coverage, with a compile/target SDK of 36.
 - Configured Kotlin as the primary language with JVM target 17.
 - Enabled ViewBinding in `build.gradle.kts` to eliminate `findViewById` boilerplate and enable compile-time view safety.
 
 **Step 2: Firebase Integration**
+
 - Registered the application with Firebase project `semsync-bf92d`.
 - Added the `google-services.json` configuration file.
 - Integrated Firebase BOM (Bill of Materials) for version-aligned dependencies:
@@ -191,15 +193,15 @@ Firestore Collections:
 **Step 3: Dependency Configuration**
 Key dependencies added beyond Firebase:
 
-| Dependency | Version | Purpose |
-|-----------|---------|---------|
-| Jetpack Navigation | via libs | Fragment navigation + bottom nav binding |
-| WorkManager | 2.8.1 | Background periodic announcement checks |
-| Google Play Services Auth | via libs | Google Sign-In OAuth flow |
-| OkHttp | 4.12.0 | HTTP client for Cloud Function AI chat calls |
-| Kotlin Coroutines Android | 1.7.3 | Asynchronous programming |
-| Kotlin Coroutines Play Services | 1.7.3 | `await()` extension for Firebase Tasks |
-| Material Components | via libs | Material Design UI components |
+| Dependency                      | Version  | Purpose                                      |
+| ------------------------------- | -------- | -------------------------------------------- |
+| Jetpack Navigation              | via libs | Fragment navigation + bottom nav binding     |
+| WorkManager                     | 2.8.1    | Background periodic announcement checks      |
+| Google Play Services Auth       | via libs | Google Sign-In OAuth flow                    |
+| OkHttp                          | 4.12.0   | HTTP client for Cloud Function AI chat calls |
+| Kotlin Coroutines Android       | 1.7.3    | Asynchronous programming                     |
+| Kotlin Coroutines Play Services | 1.7.3    | `await()` extension for Firebase Tasks       |
+| Material Components             | via libs | Material Design UI components                |
 
 ### 3.2 Authentication Module
 
@@ -311,12 +313,14 @@ Full CRUD task management:
 A dual-layer notification system:
 
 #### In-App Notifications Screen
+
 - Uses Kotlin coroutines to fetch posts from all user groups in parallel.
 - For each group, retrieves up to 20 posts ordered by `timestamp` descending, with a fallback to `createdAt` ordering if the timestamp index query fails.
 - All posts are aggregated, sorted by newest first, and displayed in a full-screen RecyclerView using the shared `AnnouncementsAdapter`.
 - Accessible from the Home dashboard's bell icon button.
 
 #### Background Push Notifications
+
 - `AnnouncementCheckWorker` extends `CoroutineWorker` and runs every 15 minutes via WorkManager.
 - On each run, it reads the last check timestamp from `SharedPreferences` (defaults to 1 hour ago if first run).
 - Queries each group's `posts` subcollection for documents with `timestamp > lastCheckTime`.
@@ -326,6 +330,7 @@ A dual-layer notification system:
 - The notification's `PendingIntent` opens `MainActivity` when tapped.
 
 #### FCM Integration
+
 - When a user joins a group, the app subscribes to the FCM topic `"group_{groupId}"`.
 - A Firebase Cloud Function (`sendNewPostNotification`) triggers on new post document creation and pushes an FCM message to the group's topic.
 - This provides near-instant push notifications to all group members' devices.
@@ -355,15 +360,15 @@ A dual-layer notification system:
 
 Six data classes model the Firestore documents:
 
-| Class | Fields | Firestore Source |
-|-------|--------|-----------------|
-| `AcademicGroup` | id, name, code, joinCode, lecturerName, repId, course, description, members[], units[], createdAt | `groups/{id}` |
-| `GroupPost` | id, groupId, authorId, authorName, content, createdAt, timestamp, type, attachments[] | `groups/{id}/posts/{id}` |
-| `AcademicUnit` | id, groupId, name, code, lecturerName, schedule[] | `groups/{id}/units/{id}` |
-| `UnitSchedule` | day, startTime, endTime, location | Embedded in AcademicUnit |
-| `TimetableEntry` | unitName, unitCode, location, startTime, endTime, dayOfWeek | Derived view model for dashboard |
-| `Task` | id, userId, title, description, courseCode, completed, priority, dueDate, taskType, createdAt, status | `tasks/{id}` |
-| `EnrichedPost` | post (GroupPost), groupName (String) | Derived wrapper for cross-group display |
+| Class            | Fields                                                                                                | Firestore Source                        |
+| ---------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `AcademicGroup`  | id, name, code, joinCode, lecturerName, repId, course, description, members[], units[], createdAt     | `groups/{id}`                           |
+| `GroupPost`      | id, groupId, authorId, authorName, content, createdAt, timestamp, type, attachments[]                 | `groups/{id}/posts/{id}`                |
+| `AcademicUnit`   | id, groupId, name, code, lecturerName, schedule[]                                                     | `groups/{id}/units/{id}`                |
+| `UnitSchedule`   | day, startTime, endTime, location                                                                     | Embedded in AcademicUnit                |
+| `TimetableEntry` | unitName, unitCode, location, startTime, endTime, dayOfWeek                                           | Derived view model for dashboard        |
+| `Task`           | id, userId, title, description, courseCode, completed, priority, dueDate, taskType, createdAt, status | `tasks/{id}`                            |
+| `EnrichedPost`   | post (GroupPost), groupName (String)                                                                  | Derived wrapper for cross-group display |
 
 ---
 
@@ -371,23 +376,23 @@ Six data classes model the Firestore documents:
 
 ### 4.1 Core Features (Meeting Assignment Requirement of ≥ 3)
 
-| # | Feature | Description |
-|---|---------|-------------|
-| **F1** | **Smart Dashboard** | Aggregates today's schedule (with smart next-class logic), upcoming tasks, and recent announcements from all groups into one screen. |
+| #      | Feature                          | Description                                                                                                                                                          |
+| ------ | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **F1** | **Smart Dashboard**              | Aggregates today's schedule (with smart next-class logic), upcoming tasks, and recent announcements from all groups into one screen.                                 |
 | **F2** | **Academic Group Collaboration** | Students join groups via codes. Class reps manage course units, post announcements, and maintain academic schedules that automatically populate members' timetables. |
-| **F3** | **Task Management** | Full CRUD for personal academic tasks with priority levels, due dates, filter views, and overdue detection. |
-| **F4** | **Real-Time Notifications** | Dual-layer system: background WorkManager checks every 15 min + FCM topic-based push notifications. Aggregated notification feed screen. |
-| **F5** | **Weekly Timetable** | Dynamic weekly view populated from all joined group units, with day-by-day tabs. |
-| **F6** | **AI Chat Assistant** | Contextual academic assistant powered by Google Gemini, accessed via Cloud Function. |
+| **F3** | **Task Management**              | Full CRUD for personal academic tasks with priority levels, due dates, filter views, and overdue detection.                                                          |
+| **F4** | **Real-Time Notifications**      | Dual-layer system: background WorkManager checks every 15 min + FCM topic-based push notifications. Aggregated notification feed screen.                             |
+| **F5** | **Weekly Timetable**             | Dynamic weekly view populated from all joined group units, with day-by-day tabs.                                                                                     |
+| **F6** | **AI Chat Assistant**            | Contextual academic assistant powered by Google Gemini, accessed via Cloud Function.                                                                                 |
 
 ### 4.2 Supporting Features
 
-| Feature | Description |
-|---------|-------------|
-| **Dual Authentication** | Email/password + Google OAuth sign-in |
-| **Offline Support** | Firestore persistent cache enables app usage without internet |
-| **Role-Based Access** | Rep-only actions (unit management, delete) enforced in both UI and Firestore rules |
-| **Digital Notebook** | Read access to personal notes synced from the web platform |
+| Feature                 | Description                                                                        |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| **Dual Authentication** | Email/password + Google OAuth sign-in                                              |
+| **Offline Support**     | Firestore persistent cache enables app usage without internet                      |
+| **Role-Based Access**   | Rep-only actions (unit management, delete) enforced in both UI and Firestore rules |
+| **Digital Notebook**    | Read access to personal notes synced from the web platform                         |
 
 ---
 
@@ -455,19 +460,19 @@ MainActivity
 
 The app uses two async approaches:
 
-| Pattern | Used By | Mechanism |
-|---------|---------|-----------|
-| **Callback-based Listeners** | HomeFragment, GroupsFragment, TasksFragment, GroupDetailFragment | Firestore `addSnapshotListener` / `.get().addOnSuccessListener()` |
-| **Coroutines + await()** | NotificationsFragment, AnnouncementCheckWorker | `lifecycleScope.launch(Dispatchers.IO)` + `kotlinx-coroutines-play-services` `await()` extension |
+| Pattern                      | Used By                                                          | Mechanism                                                                                        |
+| ---------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Callback-based Listeners** | HomeFragment, GroupsFragment, TasksFragment, GroupDetailFragment | Firestore `addSnapshotListener` / `.get().addOnSuccessListener()`                                |
+| **Coroutines + await()**     | NotificationsFragment, AnnouncementCheckWorker                   | `lifecycleScope.launch(Dispatchers.IO)` + `kotlinx-coroutines-play-services` `await()` extension |
 
 ### 5.4 Security Model
 
-| Layer | Implementation |
-|-------|---------------|
-| **Authentication** | Firebase Auth enforces identity. App checks `currentUser` before any data operation. |
-| **Authorization** | Firestore Security Rules enforce document-level access (owner-only for tasks/notes, member-check for groups, rep-check for unit management). |
-| **UI-Level Guards** | Rep-specific actions (add unit, delete unit) are hidden/shown based on `repId == currentUserId`. |
-| **Network** | HTTPS enforced for all Firebase SDK communication. OkHttp for Cloud Function calls. |
+| Layer               | Implementation                                                                                                                               |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Authentication**  | Firebase Auth enforces identity. App checks `currentUser` before any data operation.                                                         |
+| **Authorization**   | Firestore Security Rules enforce document-level access (owner-only for tasks/notes, member-check for groups, rep-check for unit management). |
+| **UI-Level Guards** | Rep-specific actions (add unit, delete unit) are hidden/shown based on `repId == currentUserId`.                                             |
+| **Network**         | HTTPS enforced for all Firebase SDK communication. OkHttp for Cloud Function calls.                                                          |
 
 ---
 
@@ -481,83 +486,85 @@ Testing was conducted across three dimensions as required by the assignment brie
 
 Each core feature was tested against its expected behavior:
 
-| Test Case | Input | Expected Result | Status |
-|-----------|-------|-----------------|--------|
-| **TC-01:** User Registration | Name, email, password, role="Student" | Account created in Firebase Auth + Firestore profile document created at `users/{uid}` | ✅ Pass |
-| **TC-02:** Email Sign-In | Valid credentials | Redirected to MainActivity Dashboard | ✅ Pass |
-| **TC-03:** Google Sign-In | Google account selection | Firebase auth + auto-created Firestore profile | ✅ Pass |
-| **TC-04:** Dashboard Schedule | User has joined groups with today's classes | Dashboard card shows next unfinished class (not first class of the day) | ✅ Pass |
-| **TC-05:** Dashboard Schedule Fallback | All today's classes are done | Card shows "Tomorrow's Schedule" with the first class | ✅ Pass |
-| **TC-06:** Join Group | Enter valid 6-character join code | User added to group members array + FCM topic subscribed | ✅ Pass |
-| **TC-07:** Join Group (Invalid Code) | Enter non-existent code | Toast error "No group found with that code" | ✅ Pass |
-| **TC-08:** Create Post | Type content in group detail → post | New post appears in feed with correct author name and timestamp | ✅ Pass |
-| **TC-09:** Add Task | Fill all fields in add-task dialog | Task appears in "To Do" filter list with correct priority color | ✅ Pass |
-| **TC-10:** Complete Task | Check checkbox on task | Task moves to "Completed" filter, removed from "To Do" | ✅ Pass |
-| **TC-11:** Delete Task | Tap delete icon | Task removed from Firestore and UI | ✅ Pass |
-| **TC-12:** Timetable View | Select a day tab | Shows all classes from group units for that day, sorted by start time | ✅ Pass |
-| **TC-13:** Add Unit (Rep) | Fill unit dialog as group rep | Unit appears in Schedule tab with schedule details | ✅ Pass |
-| **TC-14:** Add Unit (Non-Rep) | Non-rep tries to add unit | "Add Unit" button is hidden | ✅ Pass |
-| **TC-15:** Notifications Screen | Tap bell icon on dashboard | Shows aggregated posts from all groups, newest first | ✅ Pass |
-| **TC-16:** Background Notification | New post created in a group (by another user) | Local notification appears within 15 minutes | ✅ Pass |
-| **TC-17:** AI Chat | Type "What classes do I have tomorrow?" | AI responds with contextual academic information | ✅ Pass |
-| **TC-18:** Offline Access | Disable internet → open app | Previously loaded data visible (Firestore cache) | ✅ Pass |
+| Test Case                              | Input                                         | Expected Result                                                                        | Status  |
+| -------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------- | ------- |
+| **TC-01:** User Registration           | Name, email, password, role="Student"         | Account created in Firebase Auth + Firestore profile document created at `users/{uid}` | ✅ Pass |
+| **TC-02:** Email Sign-In               | Valid credentials                             | Redirected to MainActivity Dashboard                                                   | ✅ Pass |
+| **TC-03:** Google Sign-In              | Google account selection                      | Firebase auth + auto-created Firestore profile                                         | ✅ Pass |
+| **TC-04:** Dashboard Schedule          | User has joined groups with today's classes   | Dashboard card shows next unfinished class (not first class of the day)                | ✅ Pass |
+| **TC-05:** Dashboard Schedule Fallback | All today's classes are done                  | Card shows "Tomorrow's Schedule" with the first class                                  | ✅ Pass |
+| **TC-06:** Join Group                  | Enter valid 6-character join code             | User added to group members array + FCM topic subscribed                               | ✅ Pass |
+| **TC-07:** Join Group (Invalid Code)   | Enter non-existent code                       | Toast error "No group found with that code"                                            | ✅ Pass |
+| **TC-08:** Create Post                 | Type content in group detail → post           | New post appears in feed with correct author name and timestamp                        | ✅ Pass |
+| **TC-09:** Add Task                    | Fill all fields in add-task dialog            | Task appears in "To Do" filter list with correct priority color                        | ✅ Pass |
+| **TC-10:** Complete Task               | Check checkbox on task                        | Task moves to "Completed" filter, removed from "To Do"                                 | ✅ Pass |
+| **TC-11:** Delete Task                 | Tap delete icon                               | Task removed from Firestore and UI                                                     | ✅ Pass |
+| **TC-12:** Timetable View              | Select a day tab                              | Shows all classes from group units for that day, sorted by start time                  | ✅ Pass |
+| **TC-13:** Add Unit (Rep)              | Fill unit dialog as group rep                 | Unit appears in Schedule tab with schedule details                                     | ✅ Pass |
+| **TC-14:** Add Unit (Non-Rep)          | Non-rep tries to add unit                     | "Add Unit" button is hidden                                                            | ✅ Pass |
+| **TC-15:** Notifications Screen        | Tap bell icon on dashboard                    | Shows aggregated posts from all groups, newest first                                   | ✅ Pass |
+| **TC-16:** Background Notification     | New post created in a group (by another user) | Local notification appears within 15 minutes                                           | ✅ Pass |
+| **TC-17:** AI Chat                     | Type "What classes do I have tomorrow?"       | AI responds with contextual academic information                                       | ✅ Pass |
+| **TC-18:** Offline Access              | Disable internet → open app                   | Previously loaded data visible (Firestore cache)                                       | ✅ Pass |
 
 #### 6.1.2 Usability Testing
 
 Usability testing was conducted with a group of 8 university students across different year groups:
 
 **Test Protocol:**
+
 1. Participants were given the app with no prior training.
 2. They were asked to complete 5 tasks: (a) Sign up, (b) Join a group, (c) View today's schedule, (d) Create a task, (e) Check notifications.
 3. Success rate, time-to-completion, and qualitative feedback were recorded.
 
 **Results:**
 
-| Task | Success Rate | Avg. Time | Notes |
-|------|-------------|-----------|-------|
-| Sign up | 8/8 (100%) | 45s | Email/password flow was intuitive. Google was faster (~15s). |
-| Join group | 7/8 (87.5%) | 30s | One user initially looked for a "scan QR" option before finding text input. |
-| View schedule | 8/8 (100%) | 5s | Dashboard card was immediately visible. |
-| Create task | 8/8 (100%) | 35s | Priority and date pickers were understood. One user wanted a "repeat" option. |
-| Check notifications | 6/8 (75%) | 15s | Two users tapped the announcements section on the dashboard instead of the bell icon. |
+| Task                | Success Rate | Avg. Time | Notes                                                                                 |
+| ------------------- | ------------ | --------- | ------------------------------------------------------------------------------------- |
+| Sign up             | 8/8 (100%)   | 45s       | Email/password flow was intuitive. Google was faster (~15s).                          |
+| Join group          | 7/8 (87.5%)  | 30s       | One user initially looked for a "scan QR" option before finding text input.           |
+| View schedule       | 8/8 (100%)   | 5s        | Dashboard card was immediately visible.                                               |
+| Create task         | 8/8 (100%)   | 35s       | Priority and date pickers were understood. One user wanted a "repeat" option.         |
+| Check notifications | 6/8 (75%)    | 15s       | Two users tapped the announcements section on the dashboard instead of the bell icon. |
 
 **Qualitative Feedback:**
-- *"This is way better than scrolling through WhatsApp. I can actually see what's happening."* — Year 3 student
-- *"I like that when I join a group, all the classes just appear in my timetable."* — Year 2 student
-- *"The dark theme is nice on the eyes when studying late."* — Year 4 student
-- *"Can I edit a note directly in the app?"* — Year 2 student (identified the read-only notebook limitation)
+
+- _"This is way better than scrolling through WhatsApp. I can actually see what's happening."_ — Year 3 student
+- _"I like that when I join a group, all the classes just appear in my timetable."_ — Year 2 student
+- _"The dark theme is nice on the eyes when studying late."_ — Year 4 student
+- _"Can I edit a note directly in the app?"_ — Year 2 student (identified the read-only notebook limitation)
 
 #### 6.1.3 Performance Testing
 
-| Metric | Measurement | Target | Result |
-|--------|------------|--------|--------|
-| Cold startup time | Sign-in to Dashboard visible | < 3 seconds | ~2.1 seconds (on Pixel 6a emulator) |
-| Dashboard data load | All 4 sections populated | < 2 seconds | ~1.4 seconds (cached), ~2.8 seconds (fresh) |
-| Firestore offline cache hit | App opened without internet | Data visible | ✅ Previously loaded data available instantly |
-| Memory usage | Normal operation with 5 groups | < 150 MB | ~95 MB (Android Studio Profiler) |
-| APK size | Release build | < 30 MB | ~18 MB (unoptimized, minify disabled) |
-| Background worker battery | 15-min periodic work | Minimal | WorkManager respects Doze mode and battery optimization |
+| Metric                      | Measurement                    | Target       | Result                                                  |
+| --------------------------- | ------------------------------ | ------------ | ------------------------------------------------------- |
+| Cold startup time           | Sign-in to Dashboard visible   | < 3 seconds  | ~2.1 seconds (on Pixel 6a emulator)                     |
+| Dashboard data load         | All 4 sections populated       | < 2 seconds  | ~1.4 seconds (cached), ~2.8 seconds (fresh)             |
+| Firestore offline cache hit | App opened without internet    | Data visible | ✅ Previously loaded data available instantly           |
+| Memory usage                | Normal operation with 5 groups | < 150 MB     | ~95 MB (Android Studio Profiler)                        |
+| APK size                    | Release build                  | < 30 MB      | ~18 MB (unoptimized, minify disabled)                   |
+| Background worker battery   | 15-min periodic work           | Minimal      | WorkManager respects Doze mode and battery optimization |
 
 #### 6.1.4 Responsiveness Testing
 
 The app was tested on multiple screen configurations:
 
-| Device / Config | Screen Size | Result |
-|----------------|-------------|--------|
-| Pixel 6a (Emulator) | 6.1" / 1080×2400 | ✅ All layouts render correctly |
-| Pixel 4 (Emulator) | 5.7" / 1080×2280 | ✅ Scroll behavior correct for small screens |
-| Samsung Galaxy A14 (Physical) | 6.6" / 1080×2408 | ✅ UI adapts, no overflow issues |
-| Tablet (Emulator, 10") | 10.1" / 1200×1920 | ⚠️ Functional but layouts are stretched — no tablet-specific optimization |
+| Device / Config               | Screen Size       | Result                                                                    |
+| ----------------------------- | ----------------- | ------------------------------------------------------------------------- |
+| Pixel 6a (Emulator)           | 6.1" / 1080×2400  | ✅ All layouts render correctly                                           |
+| Pixel 4 (Emulator)            | 5.7" / 1080×2280  | ✅ Scroll behavior correct for small screens                              |
+| Samsung Galaxy A14 (Physical) | 6.6" / 1080×2408  | ✅ UI adapts, no overflow issues                                          |
+| Tablet (Emulator, 10")        | 10.1" / 1200×1920 | ⚠️ Functional but layouts are stretched — no tablet-specific optimization |
 
 ### 6.2 Improvements Made Based on Evaluation
 
-| Feedback / Issue | Change Implemented |
-|-----------------|-------------------|
-| Dashboard showed first class even if it was over | Implemented "next unfinished class" logic in `updateDashboardSchedule()` |
-| "20507 days ago" displayed for announcements | Fixed by prioritizing `timestamp` (Server Timestamp) over `createdAt` in adapter |
-| Users wanted to see ALL notifications, not just 5 | Created `NotificationsFragment` with 20-per-group aggregation |
-| Bell icon not discoverable | Could consider adding a badge/count indicator in future iteration |
-| "Notebook is read-only" complaint | Noted for future development; currently syncs from web platform |
+| Feedback / Issue                                  | Change Implemented                                                               |
+| ------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Dashboard showed first class even if it was over  | Implemented "next unfinished class" logic in `updateDashboardSchedule()`         |
+| "20507 days ago" displayed for announcements      | Fixed by prioritizing `timestamp` (Server Timestamp) over `createdAt` in adapter |
+| Users wanted to see ALL notifications, not just 5 | Created `NotificationsFragment` with 20-per-group aggregation                    |
+| Bell icon not discoverable                        | Could consider adding a badge/count indicator in future iteration                |
+| "Notebook is read-only" complaint                 | Noted for future development; currently syncs from web platform                  |
 
 ---
 
@@ -565,21 +572,21 @@ The app was tested on multiple screen configurations:
 
 ### 7.1 Technical Challenges
 
-| Challenge | Description | Solution |
-|-----------|------------|----------|
-| **Timestamp Inconsistency** | Firestore `ServerTimestamp` is `null` at write time and populated asynchronously. Old posts used a Long-based `createdAt` while new posts used Firestore `Timestamp`. This caused "20507 days ago" display errors. | Introduced dual-field model (`timestamp` + `createdAt`). Adapter logic checks `timestamp` first, falls back to `createdAt`, defaults to current time if both are null. |
-| **Cross-Group Data Aggregation** | Dashboard and notifications need to combine data from multiple groups, each requiring separate Firestore queries. With callback-based code, this created deeply nested "callback pyramids." | For the Notifications screen, migrated to Kotlin Coroutines with `await()` for sequential, readable code. For the Dashboard, used a `pendingFetches` counter pattern with callbacks. |
-| **Background Worker Reliability** | Android's battery optimization and Doze mode can delay or skip WorkManager tasks. 15-minute minimum interval is enforced by the OS. | Supplemented with FCM topic-based push notifications (Cloud Function trigger) for near-instant delivery. WorkManager serves as a fallback for missed FCM messages. |
-| **Role Capitalization Mismatch** | Mobile app stores role as `"Student"` (capitalized), web stores as `"student"` (lowercase). This caused role-check failures when users signed up on one platform and used the other. | The web platform's `App.tsx` normalizes roles to lowercase on every auth state change. Mobile could also be updated, but the web-side fix was sufficient for interoperability. |
-| **Firestore Index Requirements** | Composite queries (e.g., `orderBy("timestamp") + whereArrayContains("members")`) require pre-created indexes. During early development, many queries silently failed. | Added fallback query patterns: try `timestamp` ordering first, catch the exception, retry with `createdAt` ordering. Firestore console links in error logs were used to create indexes incrementally. |
+| Challenge                         | Description                                                                                                                                                                                                        | Solution                                                                                                                                                                                              |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Timestamp Inconsistency**       | Firestore `ServerTimestamp` is `null` at write time and populated asynchronously. Old posts used a Long-based `createdAt` while new posts used Firestore `Timestamp`. This caused "20507 days ago" display errors. | Introduced dual-field model (`timestamp` + `createdAt`). Adapter logic checks `timestamp` first, falls back to `createdAt`, defaults to current time if both are null.                                |
+| **Cross-Group Data Aggregation**  | Dashboard and notifications need to combine data from multiple groups, each requiring separate Firestore queries. With callback-based code, this created deeply nested "callback pyramids."                        | For the Notifications screen, migrated to Kotlin Coroutines with `await()` for sequential, readable code. For the Dashboard, used a `pendingFetches` counter pattern with callbacks.                  |
+| **Background Worker Reliability** | Android's battery optimization and Doze mode can delay or skip WorkManager tasks. 15-minute minimum interval is enforced by the OS.                                                                                | Supplemented with FCM topic-based push notifications (Cloud Function trigger) for near-instant delivery. WorkManager serves as a fallback for missed FCM messages.                                    |
+| **Role Capitalization Mismatch**  | Mobile app stores role as `"Student"` (capitalized), web stores as `"student"` (lowercase). This caused role-check failures when users signed up on one platform and used the other.                               | The web platform's `App.tsx` normalizes roles to lowercase on every auth state change. Mobile could also be updated, but the web-side fix was sufficient for interoperability.                        |
+| **Firestore Index Requirements**  | Composite queries (e.g., `orderBy("timestamp") + whereArrayContains("members")`) require pre-created indexes. During early development, many queries silently failed.                                              | Added fallback query patterns: try `timestamp` ordering first, catch the exception, retry with `createdAt` ordering. Firestore console links in error logs were used to create indexes incrementally. |
 
 ### 7.2 Design Challenges
 
-| Challenge | Solution |
-|-----------|----------|
-| **6-Item Bottom Navigation** | Material Design guidelines recommend 3–5 items. We used 6 (Home, Timetable, Tasks, Groups, Notes, AI Chat) because all six features needed quick access. Mitigated by using clear icons and short labels. |
-| **Dark Theme Text Readability** | Initial text colors were too low-contrast on dark backgrounds. Iterated on the color system to ensure all text passes WCAG AA contrast ratios (white `#FFFFFF` on `#28282B` = 12.6:1 ratio). |
-| **Information Density on Dashboard** | The dashboard shows 4 data sections. On smaller screens, this required scrolling. Used a `NestedScrollView` to enable the entire dashboard to scroll while keeping each section compact. |
+| Challenge                            | Solution                                                                                                                                                                                                  |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **6-Item Bottom Navigation**         | Material Design guidelines recommend 3–5 items. We used 6 (Home, Timetable, Tasks, Groups, Notes, AI Chat) because all six features needed quick access. Mitigated by using clear icons and short labels. |
+| **Dark Theme Text Readability**      | Initial text colors were too low-contrast on dark backgrounds. Iterated on the color system to ensure all text passes WCAG AA contrast ratios (white `#FFFFFF` on `#28282B` = 12.6:1 ratio).              |
+| **Information Density on Dashboard** | The dashboard shows 4 data sections. On smaller screens, this required scrolling. Used a `NestedScrollView` to enable the entire dashboard to scroll while keeping each section compact.                  |
 
 ---
 
@@ -589,30 +596,30 @@ Based on evaluation feedback and identified gaps, the following enhancements are
 
 ### 8.1 High Priority
 
-| Enhancement | Description |
-|-------------|-------------|
-| **Profile Screen** | Allow users to view and edit their display name, registration number, university, and role. Currently marked as `// TODO` in HomeFragment. |
-| **Notebook Write Support** | Add create, edit, and delete functionality for notes, bringing mobile parity with the web platform's TipTap-based editor. |
-| **Resources Tab** | Implement file viewing/downloading in GroupDetailFragment's Resources tab, connecting to the Supabase-stored files. |
-| **Production AI Chat URL** | Replace the emulator-hardcoded Cloud Function URL with the deployed production endpoint. |
+| Enhancement                | Description                                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Profile Screen**         | Allow users to view and edit their display name, registration number, university, and role. Currently marked as `// TODO` in HomeFragment. |
+| **Notebook Write Support** | Add create, edit, and delete functionality for notes, bringing mobile parity with the web platform's TipTap-based editor.                  |
+| **Resources Tab**          | Implement file viewing/downloading in GroupDetailFragment's Resources tab, connecting to the Supabase-stored files.                        |
+| **Production AI Chat URL** | Replace the emulator-hardcoded Cloud Function URL with the deployed production endpoint.                                                   |
 
 ### 8.2 Medium Priority
 
-| Enhancement | Description |
-|-------------|-------------|
-| **Forgot Password** | Implement `sendPasswordResetEmail()` flow with a dialog on the sign-in screen. |
-| **Personal Timetable Fix** | Read back entries saved to `users/{uid}/timetable` in `fetchClasses()` so personal classes appear alongside group-sourced ones. |
-| **Assessment Integration** | Display group-posted assessments (CATs, assignments) as task items in the Tasks screen, similar to the web platform's unified view. |
-| **MVVM Architecture Refactor** | Extract business logic from Fragments into ViewModels with LiveData/StateFlow for better testability and separation of concerns. |
+| Enhancement                    | Description                                                                                                                         |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Forgot Password**            | Implement `sendPasswordResetEmail()` flow with a dialog on the sign-in screen.                                                      |
+| **Personal Timetable Fix**     | Read back entries saved to `users/{uid}/timetable` in `fetchClasses()` so personal classes appear alongside group-sourced ones.     |
+| **Assessment Integration**     | Display group-posted assessments (CATs, assignments) as task items in the Tasks screen, similar to the web platform's unified view. |
+| **MVVM Architecture Refactor** | Extract business logic from Fragments into ViewModels with LiveData/StateFlow for better testability and separation of concerns.    |
 
 ### 8.3 Low Priority
 
-| Enhancement | Description |
-|-------------|-------------|
-| **Theme Toggle** | Add a dark/light mode switcher (currently hardcoded to dark). |
-| **Safe Args Navigation** | Replace manual Bundle passing with the Gradle Safe Args plugin for type-safe navigation arguments. |
-| **Search Functionality** | Add search/filter capabilities to Groups, Notifications, and Notes screens. |
-| **Tablet Layout** | Create responsive layouts for larger screen sizes using `ConstraintLayout` guidelines and alternative layout resources. |
+| Enhancement              | Description                                                                                                             |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **Theme Toggle**         | Add a dark/light mode switcher (currently hardcoded to dark).                                                           |
+| **Safe Args Navigation** | Replace manual Bundle passing with the Gradle Safe Args plugin for type-safe navigation arguments.                      |
+| **Search Functionality** | Add search/filter capabilities to Groups, Notifications, and Notes screens.                                             |
+| **Tablet Layout**        | Create responsive layouts for larger screen sizes using `ConstraintLayout` guidelines and alternative layout resources. |
 
 ---
 
@@ -680,28 +687,28 @@ mobile-app/
 
 ### Appendix B: Firestore Collections Used
 
-| Collection Path | Operations | Screen(s) |
-|----------------|-----------|-----------|
-| `users/{uid}` | Write (registration) | SignUpActivity |
-| `users/{uid}/notes` | Read | NotebookFragment |
-| `groups` | Read (where member), Update (join) | HomeFragment, GroupsFragment, TimetableFragment, NotificationsFragment, AnnouncementCheckWorker |
-| `groups/{id}/posts` | Read, Write | HomeFragment, GroupDetailFragment, NotificationsFragment, AnnouncementCheckWorker |
-| `groups/{id}/units` | Read, Write (rep), Delete (rep) | HomeFragment, TimetableFragment, GroupDetailFragment |
-| `tasks` | Read, Write, Update, Delete | HomeFragment, TasksFragment |
+| Collection Path     | Operations                         | Screen(s)                                                                                       |
+| ------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `users/{uid}`       | Write (registration)               | SignUpActivity                                                                                  |
+| `users/{uid}/notes` | Read                               | NotebookFragment                                                                                |
+| `groups`            | Read (where member), Update (join) | HomeFragment, GroupsFragment, TimetableFragment, NotificationsFragment, AnnouncementCheckWorker |
+| `groups/{id}/posts` | Read, Write                        | HomeFragment, GroupDetailFragment, NotificationsFragment, AnnouncementCheckWorker               |
+| `groups/{id}/units` | Read, Write (rep), Delete (rep)    | HomeFragment, TimetableFragment, GroupDetailFragment                                            |
+| `tasks`             | Read, Write, Update, Delete        | HomeFragment, TasksFragment                                                                     |
 
 ### Appendix C: Third-Party Dependencies
 
-| Library | License | Purpose |
-|---------|---------|---------|
-| Firebase Auth | Apache 2.0 | Authentication |
-| Firebase Firestore | Apache 2.0 | Cloud database with offline sync |
-| Firebase Cloud Messaging | Apache 2.0 | Push notifications |
-| Google Play Services Auth | Proprietary | Google Sign-In |
-| Jetpack Navigation | Apache 2.0 | Fragment navigation |
-| WorkManager | Apache 2.0 | Background periodic tasks |
-| OkHttp 4.12 | Apache 2.0 | HTTP client for API calls |
-| Kotlin Coroutines | Apache 2.0 | Asynchronous programming |
-| Material Components | Apache 2.0 | Material Design UI |
+| Library                   | License     | Purpose                          |
+| ------------------------- | ----------- | -------------------------------- |
+| Firebase Auth             | Apache 2.0  | Authentication                   |
+| Firebase Firestore        | Apache 2.0  | Cloud database with offline sync |
+| Firebase Cloud Messaging  | Apache 2.0  | Push notifications               |
+| Google Play Services Auth | Proprietary | Google Sign-In                   |
+| Jetpack Navigation        | Apache 2.0  | Fragment navigation              |
+| WorkManager               | Apache 2.0  | Background periodic tasks        |
+| OkHttp 4.12               | Apache 2.0  | HTTP client for API calls        |
+| Kotlin Coroutines         | Apache 2.0  | Asynchronous programming         |
+| Material Components       | Apache 2.0  | Material Design UI               |
 
 ### Appendix D: GitHub Repository
 

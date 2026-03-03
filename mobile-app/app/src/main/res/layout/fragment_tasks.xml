@@ -47,6 +47,14 @@
                 app:backgroundTint="#7c3aed"
                 style="@style/Widget.MaterialComponents.Button" />
 
+                <Spinner
+                    android:id="@+id/spinnerSort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="12dp"
+                    android:spinnerMode="dropdown"
+                    android:prompt="Sort" />
+
         </LinearLayout>
 
         <!-- Bulk Action Bar -->

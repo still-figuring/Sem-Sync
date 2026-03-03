@@ -14,6 +14,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
+@Suppress("DEPRECATION")
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
@@ -71,6 +72,7 @@ class SignInActivity : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
+                // Corrected the typo from .. to .
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 Toast.makeText(this, "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()

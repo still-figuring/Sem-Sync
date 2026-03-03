@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.ArrayAdapter
+import android.widget.AdapterView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
     private lateinit var adapter: TaskAdapter
     private var allTasks: List<Task> = emptyList()
     private var currentFilter = "all" // all, todo, completed
+    private var currentSort = "none" // none, due_asc, due_desc, priority
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,6 +40,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
         val tabTodo = view.findViewById<MaterialButton>(R.id.tabTodo)
         val tabCompleted = view.findViewById<MaterialButton>(R.id.tabCompleted)
         val emptyState = view.findViewById<LinearLayout>(R.id.emptyState)
+        val spinnerSort = view.findViewById<Spinner>(R.id.spinnerSort)
     val bulkActionBar = view.findViewById<LinearLayout>(R.id.bulkActionBar)
     val selectionCountText = view.findViewById<TextView>(R.id.selectionCountText)
     val btnMarkComplete = view.findViewById<MaterialButton>(R.id.btnMarkComplete)
@@ -68,6 +71,28 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             }
         )
         recyclerView.adapter = adapter
+
+        // Setup sort spinner
+        val sortAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            listOf("Sort: None", "Due ↑", "Due ↓", "Priority")
+        ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+        spinnerSort.adapter = sortAdapter
+        spinnerSort.setSelection(0)
+        spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                currentSort = when (position) {
+                    1 -> "due_asc"
+                    2 -> "due_desc"
+                    3 -> "priority"
+                    else -> "none"
+                }
+                applyFilter(currentFilter)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
         // Bulk action handlers
         btnMarkComplete.setOnClickListener {
@@ -165,8 +190,17 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             "completed" -> allTasks.filter { it.completed }
             else -> allTasks
         }
-        adapter.updateTasks(filtered)
-        recyclerView.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
+        // Apply current sort
+        val priorityMap = mapOf("high" to 0, "medium" to 1, "low" to 2)
+        val sorted = when (currentSort) {
+            "due_asc" -> filtered.sortedWith(compareBy { it.dueDate?.toDate()?.time ?: Long.MAX_VALUE })
+            "due_desc" -> filtered.sortedWith(compareByDescending { it.dueDate?.toDate()?.time ?: Long.MIN_VALUE })
+            "priority" -> filtered.sortedWith(compareBy { priorityMap[it.priority.lowercase()] ?: 3 })
+            else -> filtered
+        }
+
+        adapter.updateTasks(sorted)
+        recyclerView.visibility = if (sorted.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun updateEmptyState(emptyState: LinearLayout) {

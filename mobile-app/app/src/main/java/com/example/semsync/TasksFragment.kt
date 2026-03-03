@@ -10,6 +10,8 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.ArrayAdapter
+import android.widget.AdapterView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -27,6 +29,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
     private lateinit var adapter: TaskAdapter
     private var allTasks: List<Task> = emptyList()
     private var currentFilter = "all" // all, todo, completed
+    private var currentSort = "none" // none, due_asc, due_desc, priority
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,6 +40,12 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
         val tabTodo = view.findViewById<MaterialButton>(R.id.tabTodo)
         val tabCompleted = view.findViewById<MaterialButton>(R.id.tabCompleted)
         val emptyState = view.findViewById<LinearLayout>(R.id.emptyState)
+        val spinnerSort = view.findViewById<Spinner>(R.id.spinnerSort)
+    val bulkActionBar = view.findViewById<LinearLayout>(R.id.bulkActionBar)
+    val selectionCountText = view.findViewById<TextView>(R.id.selectionCountText)
+    val btnMarkComplete = view.findViewById<MaterialButton>(R.id.btnMarkComplete)
+    val btnChangePriority = view.findViewById<MaterialButton>(R.id.btnChangePriority)
+    val btnBulkDelete = view.findViewById<MaterialButton>(R.id.btnBulkDelete)
 
         val currentUser = auth.currentUser?.uid ?: return
 
@@ -48,9 +57,85 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             },
             onDelete = { task ->
                 db.collection("tasks").document(task.id).delete()
+            },
+            onEdit = { task ->
+                showEditTaskDialog(task)
+            },
+            onSelectionChanged = { count ->
+                if (count > 0) {
+                    bulkActionBar.visibility = View.VISIBLE
+                    selectionCountText.text = "$count selected"
+                } else {
+                    bulkActionBar.visibility = View.GONE
+                }
             }
         )
         recyclerView.adapter = adapter
+
+        // Setup sort spinner
+        val sortAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            listOf("Sort: None", "Due ↑", "Due ↓", "Priority")
+        ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+        spinnerSort.adapter = sortAdapter
+        spinnerSort.setSelection(0)
+        spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                currentSort = when (position) {
+                    1 -> "due_asc"
+                    2 -> "due_desc"
+                    3 -> "priority"
+                    else -> "none"
+                }
+                applyFilter(currentFilter)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        // Bulk action handlers
+        btnMarkComplete.setOnClickListener {
+            val selected = adapter.getSelectedTasks()
+            if (selected.isNotEmpty()) {
+                selected.forEach { t ->
+                    db.collection("tasks").document(t.id).update("completed", true)
+                }
+                adapter.clearSelection()
+            }
+        }
+
+        btnBulkDelete.setOnClickListener {
+            val selected = adapter.getSelectedTasks()
+            if (selected.isNotEmpty()) {
+                androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Delete tasks")
+                    .setMessage("Delete ${selected.size} selected tasks?")
+                    .setPositiveButton("Delete") { _, _ ->
+                        selected.forEach { t ->
+                            db.collection("tasks").document(t.id).delete()
+                        }
+                        adapter.clearSelection()
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+        }
+
+        btnChangePriority.setOnClickListener {
+            val priorities = arrayOf("Low", "Medium", "High")
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Change priority")
+                .setItems(priorities) { _, which ->
+                    val newPriority = priorities[which].lowercase()
+                    val selected = adapter.getSelectedTasks()
+                    selected.forEach { t ->
+                        db.collection("tasks").document(t.id).update("priority", newPriority)
+                    }
+                    adapter.clearSelection()
+                }
+                .show()
+        }
 
         // Listen for tasks from Firestore
         db.collection("tasks")
@@ -105,8 +190,17 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             "completed" -> allTasks.filter { it.completed }
             else -> allTasks
         }
-        adapter.updateTasks(filtered)
-        recyclerView.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
+        // Apply current sort
+        val priorityMap = mapOf("high" to 0, "medium" to 1, "low" to 2)
+        val sorted = when (currentSort) {
+            "due_asc" -> filtered.sortedWith(compareBy { it.dueDate?.toDate()?.time ?: Long.MAX_VALUE })
+            "due_desc" -> filtered.sortedWith(compareByDescending { it.dueDate?.toDate()?.time ?: Long.MIN_VALUE })
+            "priority" -> filtered.sortedWith(compareBy { priorityMap[it.priority.lowercase()] ?: 3 })
+            else -> filtered
+        }
+
+        adapter.updateTasks(sorted)
+        recyclerView.visibility = if (sorted.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun updateEmptyState(emptyState: LinearLayout) {
@@ -217,6 +311,130 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
                     "taskType" to if (inputCourseCode.text.toString().isNotEmpty()) "academic" else "personal"
                 )
                 db.collection("tasks").add(newTask)
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showEditTaskDialog(task: Task) {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_add_task, null)
+
+        val inputTaskTitle = dialogView.findViewById<EditText>(R.id.inputTaskTitle)
+        val inputCourseCode = dialogView.findViewById<EditText>(R.id.inputCourseCode)
+        val spinnerPriority = dialogView.findViewById<Spinner>(R.id.spinnerPriority)
+        val inputDueDate = dialogView.findViewById<EditText>(R.id.inputDueDate)
+        val btnDatePicker = dialogView.findViewById<android.widget.ImageButton>(R.id.btnDatePicker)
+        val inputDescription = dialogView.findViewById<EditText>(R.id.inputDescription)
+        val headerTitle = dialogView.findViewById<TextView>(R.id.header_title)
+        val headerSubtitle = dialogView.findViewById<TextView>(R.id.header_subtitle)
+
+        // Update dialog header
+        headerTitle.text = "Edit Task"
+        headerSubtitle.text = "Update your task details."
+
+        // Pre-fill fields with existing task data
+        inputTaskTitle.setText(task.title)
+        inputCourseCode.setText(task.courseCode)
+        inputDescription.setText(task.description)
+
+        // Setup Priority Spinner
+        val priorityAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            listOf("Low", "Medium", "High")
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spinnerPriority.adapter = priorityAdapter
+        spinnerPriority.setSelection(
+            when (task.priority.lowercase()) {
+                "high" -> 2
+                "medium" -> 1
+                else -> 0
+            }
+        )
+
+        var selectedDate: Long? = null
+
+        // Pre-fill due date if exists
+        if (task.dueDate != null) {
+            val sdf = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+            inputDueDate.setText(sdf.format(task.dueDate!!.toDate()))
+            selectedDate = task.dueDate!!.toDate().time
+        }
+
+        // Function to show date picker
+        fun showDatePickerDialog() {
+            val calendar = Calendar.getInstance()
+            if (task.dueDate != null) {
+                calendar.time = task.dueDate!!.toDate()
+            }
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val selectedCalendar = Calendar.getInstance()
+                    selectedCalendar.set(year, month, dayOfMonth)
+                    selectedDate = selectedCalendar.timeInMillis
+                    val sdf = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+                    inputDueDate.setText(sdf.format(selectedCalendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
+        }
+
+        // Date Picker - open from button click
+        btnDatePicker.setOnClickListener {
+            showDatePickerDialog()
+        }
+
+        // Date Picker - open from edit field click
+        inputDueDate.setOnClickListener {
+            showDatePickerDialog()
+        }
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        // Setup buttons
+        val btnCancel = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCancel)
+        val btnCreateTask = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCreateTask)
+        val btnCloseDialog = dialogView.findViewById<android.widget.ImageButton>(R.id.btnCloseDialog)
+
+        // Change button text for edit
+        btnCreateTask.text = "Save Changes"
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnCreateTask.setOnClickListener {
+            val title = inputTaskTitle.text.toString()
+            if (title.isNotEmpty()) {
+                val updatedTask = hashMapOf(
+                    "title" to title,
+                    "description" to inputDescription.text.toString(),
+                    "courseCode" to inputCourseCode.text.toString(),
+                    "priority" to spinnerPriority.selectedItem.toString().lowercase(),
+                    "dueDate" to if (selectedDate != null) {
+                        com.google.firebase.Timestamp(java.util.Date(selectedDate!!))
+                    } else {
+                        null
+                    },
+                    "taskType" to if (inputCourseCode.text.toString().isNotEmpty()) "academic" else "personal"
+                )
+                db.collection("tasks").document(task.id).update(updatedTask as Map<String, Any>)
                 dialog.dismiss()
             }
         }

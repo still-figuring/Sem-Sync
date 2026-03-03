@@ -1,7 +1,6 @@
 package com.example.semsync
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,4 +66,13 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+// Placeholder adapter — replaced by real data adapters once available
+class NotesAdapter(private val items: List<Any>) : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(TextView(parent.context))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {}
+    override fun getItemCount() = items.size
 }

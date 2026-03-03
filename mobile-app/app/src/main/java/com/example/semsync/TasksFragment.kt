@@ -38,6 +38,11 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
         val tabTodo = view.findViewById<MaterialButton>(R.id.tabTodo)
         val tabCompleted = view.findViewById<MaterialButton>(R.id.tabCompleted)
         val emptyState = view.findViewById<LinearLayout>(R.id.emptyState)
+    val bulkActionBar = view.findViewById<LinearLayout>(R.id.bulkActionBar)
+    val selectionCountText = view.findViewById<TextView>(R.id.selectionCountText)
+    val btnMarkComplete = view.findViewById<MaterialButton>(R.id.btnMarkComplete)
+    val btnChangePriority = view.findViewById<MaterialButton>(R.id.btnChangePriority)
+    val btnBulkDelete = view.findViewById<MaterialButton>(R.id.btnBulkDelete)
 
         val currentUser = auth.currentUser?.uid ?: return
 
@@ -52,9 +57,60 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             },
             onEdit = { task ->
                 showEditTaskDialog(task)
+            },
+            onSelectionChanged = { count ->
+                if (count > 0) {
+                    bulkActionBar.visibility = View.VISIBLE
+                    selectionCountText.text = "$count selected"
+                } else {
+                    bulkActionBar.visibility = View.GONE
+                }
             }
         )
         recyclerView.adapter = adapter
+
+        // Bulk action handlers
+        btnMarkComplete.setOnClickListener {
+            val selected = adapter.getSelectedTasks()
+            if (selected.isNotEmpty()) {
+                selected.forEach { t ->
+                    db.collection("tasks").document(t.id).update("completed", true)
+                }
+                adapter.clearSelection()
+            }
+        }
+
+        btnBulkDelete.setOnClickListener {
+            val selected = adapter.getSelectedTasks()
+            if (selected.isNotEmpty()) {
+                androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Delete tasks")
+                    .setMessage("Delete ${selected.size} selected tasks?")
+                    .setPositiveButton("Delete") { _, _ ->
+                        selected.forEach { t ->
+                            db.collection("tasks").document(t.id).delete()
+                        }
+                        adapter.clearSelection()
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+        }
+
+        btnChangePriority.setOnClickListener {
+            val priorities = arrayOf("Low", "Medium", "High")
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Change priority")
+                .setItems(priorities) { _, which ->
+                    val newPriority = priorities[which].lowercase()
+                    val selected = adapter.getSelectedTasks()
+                    selected.forEach { t ->
+                        db.collection("tasks").document(t.id).update("priority", newPriority)
+                    }
+                    adapter.clearSelection()
+                }
+                .show()
+        }
 
         // Listen for tasks from Firestore
         db.collection("tasks")

@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.semsync.databinding.FragmentHomeBinding
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.viewModels
 
 class HomeFragment : Fragment() {
 

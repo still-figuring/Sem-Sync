@@ -4,158 +4,145 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.view.inputmethod.EditorInfo
+import android.widget.ImageButton
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.semsync.databinding.FragmentAiChatBinding
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
+/**
+ * AiChatFragment — the View layer. Pure UI, zero business logic.
+ *
+ * Lifecycle safety:
+ *   - State is collected inside repeatOnLifecycle(STARTED) so collection
+ *     automatically pauses when the fragment is backgrounded and resumes
+ *     when it returns to the foreground. This prevents processing UI updates
+ *     against a detached view.
+ *
+ * Configuration-change resilience:
+ *   - The ViewModel (via viewModels delegate) survives rotation.
+ *   - Messages are re-submitted to the adapter on every emission, so the list
+ *     is always up-to-date after rotation without any manual save/restore.
+ *
+ * Coupling:
+ *   - This class depends on AiChatViewModel and ChatAdapter only.
+ *   - GeminiRepository is invisible to this layer.
+ */
 class AiChatFragment : Fragment() {
 
-    private var _binding: FragmentAiChatBinding? = null
-    private val binding get() = _binding!!
-    
-    // Simple data model for the list
-    data class ChatMessage(val text: String, val isUser: Boolean)
-    private val messages = mutableListOf<ChatMessage>()
+    // viewModels() scopes the ViewModel to THIS fragment's lifecycle.
+    // It survives rotation but is cleared when the fragment is destroyed.
+    private val viewModel: AiChatViewModel by viewModels()
+
     private lateinit var adapter: ChatAdapter
-    
-    // Network Client
-    private val client = OkHttpClient()
+    private lateinit var rvMessages: RecyclerView
+    private lateinit var etInput: TextInputEditText
+    private lateinit var btnSend: ImageButton
+
+    // ─── Lifecycle ───────────────────────────────────────────────────────────
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentAiChatBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View = inflater.inflate(R.layout.fragment_ai_chat, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+        setupRecyclerView()
+        setupInputHandling()
+        observeState()
+    }
 
-        // Setup Recycler
-        adapter = ChatAdapter(messages)
-        binding.rvChat.layoutManager = LinearLayoutManager(requireContext()).apply {
-            stackFromEnd = true // Start from bottom like WhatsApp
+    // ─── Setup ───────────────────────────────────────────────────────────────
+
+    private fun bindViews(view: View) {
+        rvMessages = view.findViewById(R.id.rvMessages)
+        etInput    = view.findViewById(R.id.etInput)
+        btnSend    = view.findViewById(R.id.btnSend)
+    }
+
+    private fun setupRecyclerView() {
+        adapter = ChatAdapter(onRetry = viewModel::retryMessage)
+
+        val layoutManager = LinearLayoutManager(requireContext()).apply {
+            stackFromEnd = true  // new messages appear at the bottom
         }
-        binding.rvChat.adapter = adapter
 
-        // Add Welcome Message
-        if (messages.isEmpty()) {
-            addMessage("Hello! I'm SemSync AI. How can I help with your studies today?", false)
-        }
-
-        binding.btnSend.setOnClickListener {
-            val text = binding.etMessage.text.toString().trim()
-            if (text.isNotEmpty()) {
-                sendMessage(text)
-                binding.etMessage.text.clear()
-            }
+        rvMessages.apply {
+            this.adapter       = this@AiChatFragment.adapter
+            this.layoutManager = layoutManager
+            // Prevent flicker when items change
+            itemAnimator?.changeDuration = 0
         }
     }
 
-    private fun addMessage(text: String, isUser: Boolean) {
-        messages.add(ChatMessage(text, isUser))
-        adapter.notifyItemInserted(messages.size - 1)
-        binding.rvChat.scrollToPosition(messages.size - 1)
-    }
-
-    private fun sendMessage(query: String) {
-        addMessage(query, true) // Show user message
-        binding.progressBar.visibility = View.VISIBLE // Show loading
-        
-        // Launch network request in background
-        lifecycleScope.launch(Dispatchers.IO) {
-            val responseText = try {
-                callCloudFunction(query)
-            } catch (e: Exception) {
-                "Error: ${e.localizedMessage}"
-            }
-            
-            // Switch back to Main Thread to update UI
-            withContext(Dispatchers.Main) {
-                binding.progressBar.visibility = View.GONE
-                addMessage(responseText, false)
-            }
+    private fun setupInputHandling() {
+        // Disable send button when input is empty
+        etInput.doAfterTextChanged { text ->
+            btnSend.isEnabled = !text.isNullOrBlank()
         }
-    }
+        btnSend.isEnabled = false
 
-    private fun callCloudFunction(query: String): String {
-        // IMPORTANT: Use 10.0.2.2 for Android Emulator to reach localhost
-        // If testing on REAL PHONE, use your computer's IP (e.g. 192.168.1.5)
-        // OR the deployed URL: https://us-central1-semsync-bf92d.cloudfunctions.net/chat
-        // TODO: CHANGE THIS TO YOUR PRODUCTION URL FOR DEMO IF NOT USING EMULATOR
-        val url = "http://10.0.2.2:5001/semsync-bf92d/us-central1/chat"
-        
-        val json = JSONObject()
-        json.put("message", query)
-        
-        val body = json.toString().toRequestBody("application/json".toMediaType())
-        val request = Request.Builder().url(url).post(body).build()
-        
-        val response = client.newCall(request).execute()
-        return if (response.isSuccessful) {
-            val resBody = response.body?.string() ?: "{}"
-            JSONObject(resBody).optString("response", "No response text")
-        } else {
-            "Server Error: ${response.code}"
+        // Support "Done" / "Send" action on soft keyboard
+        etInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                dispatchSend(); true
+            } else false
         }
+
+        btnSend.setOnClickListener { dispatchSend() }
     }
 
-    // --- Inner Adapter Class for Simplicity ---
-    inner class ChatAdapter(private val list: List<ChatMessage>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val textView = TextView(parent.context).apply {
-                textSize = 16f
-                setPadding(32, 24, 32, 24)
-                layoutParams = ViewGroup.MarginLayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(0, 8, 0, 8)
+    private fun observeState() {
+        // repeatOnLifecycle ensures we stop collecting when the fragment is
+        // not visible — safe against NPEs on detached views.
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is ChatUiState.Idle        -> { /* nothing to render yet */ }
+                        is ChatUiState.Updated     -> renderUpdated(state)
+                        is ChatUiState.FatalError  -> renderFatalError(state.message)
+                    }
                 }
             }
-            return object : RecyclerView.ViewHolder(textView) {}
         }
-
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            val msg = list[position]
-            val tv = holder.itemView as TextView
-            tv.text = msg.text
-            
-            // Basic styling for User vs Bot
-            if (msg.isUser) {
-                tv.setBackgroundResource(android.R.drawable.dialog_holo_light_frame) // Simple placeholder
-                tv.setTextAppearance(androidx.appcompat.R.style.TextAppearance_AppCompat_Body1)
-                tv.setTextColor(0xFF000000.toInt())
-                tv.setBackgroundColor(0xFFE0E0E0.toInt()) // Light Gray
-                (tv.layoutParams as ViewGroup.MarginLayoutParams).leftMargin = 100
-                (tv.layoutParams as ViewGroup.MarginLayoutParams).rightMargin = 0
-            } else {
-                tv.setTextAppearance(androidx.appcompat.R.style.TextAppearance_AppCompat_Body1)
-                tv.setTextColor(0xFF000000.toInt())
-                tv.setBackgroundColor(0xFFF0F8FF.toInt()) // Alice Blue
-                (tv.layoutParams as ViewGroup.MarginLayoutParams).rightMargin = 100
-                (tv.layoutParams as ViewGroup.MarginLayoutParams).leftMargin = 0
-            }
-        }
-
-        override fun getItemCount() = list.size
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    // ─── Render ──────────────────────────────────────────────────────────────
+
+    private fun renderUpdated(state: ChatUiState.Updated) {
+        adapter.submitList(state.messages) {
+            // Scroll to bottom AFTER the list has been laid out with new items
+            if (state.messages.isNotEmpty()) {
+                rvMessages.smoothScrollToPosition(state.messages.size - 1)
+            }
+        }
+        // Lock input while the bot is thinking
+        btnSend.isEnabled = !state.isSending && !etInput.text.isNullOrBlank()
+        etInput.isEnabled = !state.isSending
+    }
+
+    private fun renderFatalError(message: String) {
+        // For the hackathon: just show a Snackbar.
+        com.google.android.material.snackbar.Snackbar
+            .make(requireView(), message, com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
+            .show()
+    }
+
+    // ─── Actions ─────────────────────────────────────────────────────────────
+
+    private fun dispatchSend() {
+        val text = etInput.text?.toString() ?: return
+        viewModel.sendMessage(text)
+        etInput.text?.clear()
     }
 }

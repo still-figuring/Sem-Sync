@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ADD these entries to your existing res/values/strings.xml
+    (paste inside the existing <resources> tag)
+-->
+<resources>
+    <string name="ai_chat_title">SemSync AI</string>
+    <string name="ai_status_online">● Online</string>
+    <string name="ai_input_hint">Ask SemSync AI…</string>
+    <string name="ai_send_button_desc">Send message</string>
+</resources>

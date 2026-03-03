@@ -4,6 +4,8 @@
     <color name="primary">#7066E0</color> <!-- Added this line -->
     <color name="primary_light">#7066E0</color>
     <color name="primary_dark">#8C85E6</color>
+    <color name="primary_alt">#7F00FF</color>
+
 
     <!-- Secondary Palette -->
     <color name="secondary">#EA4C89</color>
@@ -16,4 +18,7 @@
     <!-- Standard Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dark_gray">#28282B</color>
+    <color name="light_gray">#D3D3D3</color>
+
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ADD these entries to your existing res/values/colors.xml
+    (do not replace the whole file — just paste these <color> lines in)
+-->
+<resources>
+    <color name="chatBackground">#F0F2F5</color>
+    <color name="inputBarBackground">#222222</color>
+    <color name="inputFieldBackground">#F0F2F5</color>
+    <color name="botBubbleBackground">#FFFFFF</color>
+    <color name="colorOnSurface">#212121</color>
+    <color name="botColor">#DAB1DA</color>
+    <color name="textInputColor">#141226</color>
+</resources>

@@ -24,4 +24,8 @@
         android:id="@+id/navigation_notebook"
         android:icon="@drawable/ic_notes"
         android:title="@string/title_notebook" />
+    <item
+        android:id="@+id/navigation_ai_chat"
+        android:icon="@drawable/ic_ai_chat"
+        android:title="@string/title_ai_chat" />
 </menu>

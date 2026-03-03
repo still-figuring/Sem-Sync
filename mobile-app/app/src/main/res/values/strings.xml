@@ -6,4 +6,5 @@
     <string name="title_groups">Groups</string>
     <string name="title_notebook">Notes</string>
     <string name="title_ai_chat">AI Chat</string>
+    <string name="sort_prompt">Sort</string>
 </resources>

@@ -12,13 +12,39 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import androidx.core.graphics.toColorInt
+import android.graphics.Color
 
 class TaskAdapter(
     private var tasks: List<Task>,
     private val onCheckedChange: (Task, Boolean) -> Unit,
     private val onDelete: (Task) -> Unit,
-    private val onEdit: (Task) -> Unit
+    private val onEdit: (Task) -> Unit,
+    private val onSelectionChanged: (Int) -> Unit = {}
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
+    private val selectedTasks = mutableSetOf<String>()
+    
+    fun getSelectedTasks(): List<Task> = tasks.filter { it.id in selectedTasks }
+    
+    fun isSelectionMode(): Boolean = selectedTasks.isNotEmpty()
+    
+    fun clearSelection() {
+        selectedTasks.clear()
+        notifyDataSetChanged()
+        onSelectionChanged(0)
+    }
+    
+    fun selectAll() {
+        selectedTasks.addAll(tasks.map { it.id })
+        notifyDataSetChanged()
+        onSelectionChanged(selectedTasks.size)
+    }
+    
+    fun removeFromSelection(taskId: String) {
+        selectedTasks.remove(taskId)
+        notifyDataSetChanged()
+        onSelectionChanged(selectedTasks.size)
+    }
 
     class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val checkbox: CheckBox = view.findViewById(R.id.checkboxTask)
@@ -39,9 +65,28 @@ class TaskAdapter(
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasks[position]
         
-        // Click listener for editing task
+        val isSelected = task.id in selectedTasks
+        
+        // Update background color based on selection
+        if (isSelected) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#2d2d2d"))
+        } else {
+            holder.itemView.setBackgroundColor(Color.parseColor("#1a1a1a"))
+        }
+        
+        // Click listener for editing task (only when not in selection mode)
         holder.itemView.setOnClickListener {
-            onEdit(task)
+            if (!isSelectionMode()) {
+                onEdit(task)
+            } else {
+                toggleSelection(task, holder, position)
+            }
+        }
+        
+        // Long-press for selection
+        holder.itemView.setOnLongClickListener {
+            toggleSelection(task, holder, position)
+            true
         }
         
         holder.title.text = task.title
@@ -117,11 +162,22 @@ class TaskAdapter(
             onDelete(task)
         }
     }
+    
+    private fun toggleSelection(task: Task, holder: TaskViewHolder, position: Int) {
+        if (task.id in selectedTasks) {
+            selectedTasks.remove(task.id)
+        } else {
+            selectedTasks.add(task.id)
+        }
+        notifyItemChanged(position)
+        onSelectionChanged(selectedTasks.size)
+    }
 
     override fun getItemCount() = tasks.size
 
     fun updateTasks(newTasks: List<Task>) {
         this.tasks = newTasks
+        selectedTasks.clear()
         notifyDataSetChanged()
     }
 }

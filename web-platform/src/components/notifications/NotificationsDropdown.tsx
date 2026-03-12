@@ -97,7 +97,7 @@ export default function NotificationsDropdown() {
       {/* Bell Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-foreground relative"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors relative"
       >
         <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
@@ -156,14 +156,14 @@ export default function NotificationsDropdown() {
                       "flex gap-3 p-4 border-b border-border last:border-0 transition-colors cursor-pointer",
                       notification.read
                         ? "bg-card hover:bg-muted/50"
-                        : "bg-primary/5 hover:bg-primary/10"
+                        : "bg-primary/5 hover:bg-primary/10",
                     )}
                   >
                     {/* Icon */}
                     <div
                       className={cn(
                         "h-10 w-10 rounded-lg flex items-center justify-center shrink-0",
-                        colorClass
+                        colorClass,
                       )}
                     >
                       <Icon className="h-5 w-5" />
@@ -177,7 +177,7 @@ export default function NotificationsDropdown() {
                             "text-sm font-medium truncate",
                             notification.read
                               ? "text-foreground/80"
-                              : "text-foreground"
+                              : "text-foreground",
                           )}
                         >
                           {notification.title}
@@ -193,7 +193,7 @@ export default function NotificationsDropdown() {
                         {notification.createdAt?.toMillis
                           ? formatDistanceToNow(
                               notification.createdAt.toMillis(),
-                              { addSuffix: true }
+                              { addSuffix: true },
                             )
                           : "Just now"}
                       </p>

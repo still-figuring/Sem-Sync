@@ -83,19 +83,19 @@ export default function ProfilePage() {
     <div className="max-w-3xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Profile & Settings
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           Manage your account information and preferences.
         </p>
       </div>
 
       {/* Profile Card */}
-      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="flex items-start gap-6 flex-col sm:flex-row">
           {/* Avatar */}
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary to-purple-500 text-white text-3xl font-bold shadow-lg shrink-0">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-2xl font-semibold text-primary shrink-0">
             {user?.displayName?.charAt(0).toUpperCase() || "U"}
           </div>
 
@@ -126,8 +126,8 @@ export default function ProfilePage() {
       </div>
 
       {/* Edit Profile Section */}
-      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+      <div className="rounded-lg border border-border bg-card p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
           <User className="h-5 w-5" />
           Edit Profile
         </h3>
@@ -199,8 +199,8 @@ export default function ProfilePage() {
       </div>
 
       {/* Preferences Section */}
-      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-foreground mb-4">
+      <div className="rounded-lg border border-border bg-card p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4">
           Preferences
         </h3>
 
@@ -268,8 +268,8 @@ export default function ProfilePage() {
       </div>
 
       {/* Danger Zone */}
-      <div className="rounded-xl border border-destructive/30 bg-card p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+      <div className="rounded-lg border border-destructive/20 bg-card p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
           <Trash2 className="h-5 w-5 text-destructive" />
           Danger Zone
         </h3>
@@ -301,7 +301,7 @@ export default function ProfilePage() {
             <button
               onClick={() =>
                 alert(
-                  "Account deletion is not yet implemented. Contact support."
+                  "Account deletion is not yet implemented. Contact support.",
                 )
               }
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 px-4 py-2 text-sm font-medium transition-colors"

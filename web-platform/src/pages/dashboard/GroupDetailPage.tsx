@@ -44,7 +44,7 @@ export default function GroupDetailPage() {
 
   // Tabs: 'feed' | 'units' | 'resources'
   const [activeTab, setActiveTab] = useState<"feed" | "units" | "resources">(
-    "feed"
+    "feed",
   );
 
   // Data
@@ -179,7 +179,7 @@ export default function GroupDetailPage() {
           unitName: unit?.name,
           isAssessment: isAssessment,
           eventDate: examDate ? new Date(examDate) : undefined,
-        }
+        },
       );
       setNewPost("");
       setSelectedUnitId("");
@@ -207,7 +207,7 @@ export default function GroupDetailPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-foreground">
+              <h1 className="text-2xl font-semibold text-foreground">
                 {group.name}
               </h1>
               {isRep && (
@@ -426,7 +426,7 @@ export default function GroupDetailPage() {
                           <Clock className="h-3 w-3 mr-2" />
                           <strong>Due Date:</strong>{" "}
                           {new Date(
-                            post.eventDate.seconds * 1000
+                            post.eventDate.seconds * 1000,
                           ).toDateString()}
                         </div>
                       )}
@@ -476,7 +476,7 @@ export default function GroupDetailPage() {
                         className="text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
                         onChange={(e) =>
                           setUploadFile(
-                            e.target.files ? e.target.files[0] : null
+                            e.target.files ? e.target.files[0] : null,
                           )
                         }
                         required
@@ -536,7 +536,7 @@ export default function GroupDetailPage() {
                           <span className="text-xs text-muted-foreground">
                             •{" "}
                             {new Date(
-                              res.createdAt?.seconds * 1000 || Date.now()
+                              res.createdAt?.seconds * 1000 || Date.now(),
                             ).toLocaleDateString()}
                           </span>
                         </div>

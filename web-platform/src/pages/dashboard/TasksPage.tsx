@@ -170,16 +170,19 @@ export default function TasksPage() {
         : null;
 
       const isCompleted = completedAssessmentIds.has(a.id);
+      const assessmentTitle = a.unitName
+        ? `${a.unitName} Assessment`
+        : "Assessment";
 
       return {
         id: a.id,
         source: "assessment" as const,
-        title: `Exam/CAT: ${a.unitName || "Unknown Unit"}`,
+        title: assessmentTitle,
         description: a.content,
         dueDate: date,
         status: isCompleted ? ("done" as const) : ("todo" as const),
         priority: "high" as const, // Assessments are always high priority
-        tag: "Academic",
+        tag: a.unitName,
         originalObject: a,
       };
     }),

@@ -10,6 +10,7 @@ import {
   X,
   Settings,
   Megaphone,
+  Smartphone,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuthStore } from "../../store/authStore";
@@ -172,6 +173,27 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             </div>
           </div>
         </nav>
+
+        {/* Mobile App Banner */}
+        <div className="mx-3 mb-3 p-3 rounded-xl border border-border bg-muted/30 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+              <Smartphone className="h-4 w-4 text-primary" />
+              <span className="text-sm">Get the App</span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Take SemSync on the go. Currently under development for iOS &
+              Android!
+            </p>
+            <button
+              className="w-full inline-flex items-center justify-center rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+              disabled
+            >
+              Coming Soon
+            </button>
+          </div>
+        </div>
 
         {/* User Card */}
         <div className="p-3 border-t border-border shrink-0">

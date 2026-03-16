@@ -6,6 +6,7 @@ import {
   BookText,
   ArrowRight,
   Sparkles,
+  Smartphone,
 } from "lucide-react";
 
 const features = [
@@ -63,18 +64,14 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-6 pt-24 pb-20 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-xs font-medium text-muted-foreground mb-8">
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
-          Now with AI timetable import
-        </div>
-
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl max-w-3xl mx-auto leading-[1.1]">
-          Your semester, <span className="text-primary">organized</span>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl max-w-3xl mx-auto leading-tight">
+          Manage your academic schedule with{" "}
+          <span className="text-primary">clarity</span>
         </h1>
 
         <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-          The academic hub for students and instructors. Manage schedules, track
-          deadlines, collaborate with your class — all in one place.
+          A centralized platform for students to track classes, assignments, and
+          stay synced with their university groups.
         </p>
 
         <div className="mt-10 flex items-center justify-center gap-3">
@@ -116,8 +113,43 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Mobile App Teaser */}
+      <section className="border-t border-border bg-muted/20">
+        <div className="max-w-6xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center justify-between gap-10">
+          <div className="md:w-1/2 text-center md:text-left">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 mb-6">
+              <Smartphone className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight mb-4">
+              Take SemSync on the Go
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+              Never miss a class announcement or test deadline again. The
+              SemSync mobile application is currently under development for iOS
+              and Android.
+            </p>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-1.5 text-sm font-medium text-muted-foreground shadow-sm">
+              <Sparkles className="h-4 w-4 text-primary" />
+              Coming Soon in Alpha
+            </div>
+          </div>
+          <div className="md:w-1/2 flex justify-center md:justify-end opacity-80 decoration-muted">
+            {/* Mockup or Illustration Placeholder */}
+            <div className="relative w-64 h-[28rem] rounded-[2rem] border-8 border-border bg-card shadow-2xl flex items-center justify-center overflow-hidden">
+              <div className="absolute top-0 inset-x-0 h-6 bg-border w-1/3 mx-auto rounded-b-xl" />
+              <div className="text-center px-6">
+                <Smartphone className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-sm font-medium text-muted-foreground">
+                  Mobile App Appears Here
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="border-t border-border py-8">
+      <footer className="border-t border-border py-8 bg-background">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between text-sm text-muted-foreground">
           <span>SemSync &mdash; Academic Organization Platform</span>
           <span>v1.0.0 Alpha</span>

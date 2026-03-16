@@ -34,10 +34,10 @@ export default function GroupsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Academic Groups
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Connect with your class and lecturer.
           </p>
         </div>
@@ -101,20 +101,20 @@ export default function GroupsPage() {
                   <span>{group.memberCount} Members</span>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span className="font-medium text-gray-700">Lecturer:</span>{" "}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Lecturer:</span>{" "}
                   {group.lecturerName}
                 </div>
 
-                <div className="pt-2 border-t mt-auto">
-                  <div className="flex items-center justify-between bg-gray-50 p-2 rounded text-xs">
-                    <span className="text-gray-500">Join Code:</span>
+                <div className="pt-3 border-t border-border mt-auto">
+                  <div className="flex items-center justify-between bg-muted/50 p-2 rounded text-xs">
+                    <span className="text-muted-foreground">Join Code:</span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         copyToClipboard(group.joinCode);
                       }}
-                      className="flex items-center gap-1 font-mono font-bold text-indigo-600 hover:underline"
+                      className="flex items-center gap-1 font-mono font-semibold text-primary hover:underline"
                     >
                       {group.joinCode}
                       {copiedId === group.joinCode ? (

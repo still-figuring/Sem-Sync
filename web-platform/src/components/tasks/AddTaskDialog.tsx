@@ -79,7 +79,7 @@ export default function AddTaskDialog({
               <input
                 {...register("title")}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="e.g. Complete Calculus Assignment"
+                placeholder="Enter task title"
               />
               {errors.title && (
                 <p className="text-xs text-destructive">
@@ -96,7 +96,7 @@ export default function AddTaskDialog({
                 <input
                   {...register("courseCode")}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="CS101"
+                  placeholder="Enter course code"
                 />
               </div>
 
@@ -153,7 +153,7 @@ export default function AddTaskDialog({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 h-10 px-4 py-2 disabled:opacity-50"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 disabled:opacity-50"
               >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create Task

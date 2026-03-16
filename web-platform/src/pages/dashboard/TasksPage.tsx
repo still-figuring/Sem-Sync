@@ -170,16 +170,19 @@ export default function TasksPage() {
         : null;
 
       const isCompleted = completedAssessmentIds.has(a.id);
+      const assessmentTitle = a.unitName
+        ? `${a.unitName} Assessment`
+        : "Assessment";
 
       return {
         id: a.id,
         source: "assessment" as const,
-        title: `Exam/CAT: ${a.unitName || "Unknown Unit"}`,
+        title: assessmentTitle,
         description: a.content,
         dueDate: date,
         status: isCompleted ? ("done" as const) : ("todo" as const),
         priority: "high" as const, // Assessments are always high priority
-        tag: "Academic",
+        tag: a.unitName,
         originalObject: a,
       };
     }),
@@ -201,10 +204,10 @@ export default function TasksPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            My Tasks & Homework
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Tasks & Assignments
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Manage your personal to-dos and track class assignments.
           </p>
         </div>
@@ -309,7 +312,7 @@ export default function TasksPage() {
                   <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-muted-foreground">
                     <span
                       className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${getPriorityColor(
-                        item.priority
+                        item.priority,
                       )}`}
                     >
                       {item.source === "assessment" && (

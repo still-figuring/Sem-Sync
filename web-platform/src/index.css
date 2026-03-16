@@ -4,28 +4,28 @@
 
 @layer base {
   :root {
-    /* Hybrid Bento Light Theme */
-    --background: 228 33% 97%;
+    /* Grounded Academic Light Theme */
+    --background: 0 0% 98%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary: Indigo/Purple gradient base */
-    --primary: 239 84% 67%;
+    /* Primary: Clean University Blue */
+    --primary: 215 90% 45%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Pink accent */
-    --secondary: 330 81% 60%;
+    /* Secondary: Muted Teal */
+    --secondary: 175 40% 50%;
     --secondary-foreground: 0 0% 100%;
 
     /* Muted backgrounds */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 15% 45%;
 
     /* Accent: Light hover states */
-    --accent: 220 14% 96%;
+    --accent: 210 20% 96%;
     --accent-foreground: 222 47% 11%;
 
     /* Status colors */
@@ -35,58 +35,41 @@
     --warning: 38 92% 50%;
 
     /* Borders & inputs */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 239 84% 67%;
-    --radius: 0.75rem;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 215 90% 45%;
+    --radius: 0.5rem;
 
     /* Sidebar specific */
     --sidebar-bg: 0 0% 100%;
-    --sidebar-hover: 220 14% 96%;
-    --sidebar-active: 239 84% 67%;
-
-    /* Gradients */
-    --gradient-primary: linear-gradient(
-      135deg,
-      hsl(239 84% 67%) 0%,
-      hsl(270 76% 65%) 100%
-    );
-    --gradient-secondary: linear-gradient(
-      135deg,
-      hsl(330 81% 60%) 0%,
-      hsl(340 75% 70%) 100%
-    );
-    --gradient-tertiary: linear-gradient(
-      135deg,
-      hsl(168 76% 42%) 0%,
-      hsl(172 66% 50%) 100%
-    );
+    --sidebar-hover: 210 20% 96%;
+    --sidebar-active: 215 90% 45%;
   }
 
   .dark {
-    /* Hybrid Bento Dark Theme */
-    --background: 240 6% 4%;
-    --foreground: 0 0% 98%;
-    --card: 240 4% 7%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 4% 7%;
-    --popover-foreground: 0 0% 98%;
+    /* Grounded Academic Dark Theme */
+    --background: 220 20% 6%;
+    --foreground: 210 20% 98%;
+    --card: 220 20% 8%;
+    --card-foreground: 210 20% 98%;
+    --popover: 220 20% 8%;
+    --popover-foreground: 210 20% 98%;
 
-    /* Primary: Lighter indigo for dark mode */
-    --primary: 239 84% 74%;
-    --primary-foreground: 240 6% 4%;
+    /* Primary: Academic Blue Adjusted for Dark Mode */
+    --primary: 215 90% 60%;
+    --primary-foreground: 220 20% 6%;
 
-    /* Secondary: Pink */
-    --secondary: 330 81% 65%;
-    --secondary-foreground: 240 6% 4%;
+    /* Secondary: Muted Teal */
+    --secondary: 175 40% 60%;
+    --secondary-foreground: 220 20% 6%;
 
     /* Muted */
-    --muted: 240 4% 10%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 220 20% 12%;
+    --muted-foreground: 215 15% 65%;
 
     /* Accent */
-    --accent: 240 4% 10%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 220 20% 12%;
+    --accent-foreground: 210 20% 98%;
 
     /* Status */
     --destructive: 0 62% 30%;
@@ -95,9 +78,9 @@
     --warning: 38 92% 50%;
 
     /* Borders */
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 239 84% 74%;
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 215 90% 60%;
 
     /* Sidebar */
     --sidebar-bg: 240 4% 7%;

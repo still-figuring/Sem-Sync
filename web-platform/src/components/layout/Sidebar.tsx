@@ -8,9 +8,9 @@ import {
   FolderOpen,
   LogOut,
   X,
-  Search,
   Settings,
   Megaphone,
+  Smartphone,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuthStore } from "../../store/authStore";
@@ -53,7 +53,6 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     { name: "Resources", href: "/groups", icon: FolderOpen },
   ];
 
-  // Instructor-only navigation
   const instructorNavigation =
     user?.role === "instructor"
       ? [{ name: "Announcements", href: "/instructor", icon: Megaphone }]
@@ -66,6 +65,33 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const handleLogout = () => {
     auth.signOut();
   };
+
+  const NavItem = ({
+    item,
+  }: {
+    item: { name: string; href: string; icon: any; badge?: number };
+  }) => (
+    <NavLink
+      to={item.href}
+      onClick={() => setOpen(false)}
+      className={({ isActive }) =>
+        cn(
+          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+          isActive
+            ? "bg-primary/10 text-primary"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+        )
+      }
+    >
+      <item.icon className="h-4 w-4 shrink-0" />
+      {item.name}
+      {item.badge && (
+        <span className="ml-auto rounded-full bg-primary/15 text-primary px-2 py-0.5 text-xs font-medium tabular-nums">
+          {item.badge}
+        </span>
+      )}
+    </NavLink>
+  );
 
   return (
     <>
@@ -81,241 +107,115 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       {/* Sidebar Container */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-72 transform bg-card border-r border-border transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 flex flex-col",
+          "fixed inset-y-0 left-0 z-50 w-64 transform border-r border-border bg-card transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 flex flex-col",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Logo Header */}
-        <div className="flex items-center justify-between px-5 py-5 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/25">
-              S
-            </div>
-            <span className="text-xl font-extrabold tracking-tight">
-              Sem
-              <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-                Sync
-              </span>
-            </span>
-          </div>
+        <div className="flex items-center justify-between px-5 h-14 border-b border-border shrink-0">
+          <span className="text-lg font-bold tracking-tight">
+            Sem<span className="text-primary">Sync</span>
+          </span>
           <button
             onClick={() => setOpen(false)}
-            className="rounded-lg p-2 hover:bg-accent transition-colors lg:hidden"
+            className="rounded-md p-1.5 hover:bg-muted transition-colors lg:hidden"
           >
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </button>
         </div>
 
-        {/* Search Box */}
-        <div className="px-4 py-4">
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-10 pr-12 py-3 rounded-xl border border-border bg-muted/50 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-            />
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-              ⌘K
-            </kbd>
-          </div>
-        </div>
-
-        {/* Main Navigation */}
-        <nav className="flex-1 px-3 py-2 overflow-y-auto">
-          <div className="px-3 py-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-6">
+          <div>
+            <p className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
               Menu
-            </span>
-          </div>
-          <div className="space-y-1">
-            {mainNavigation.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.href}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
-                    isActive
-                      ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <span
-                      className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
-                        isActive
-                          ? "bg-white/20"
-                          : "bg-primary/10 group-hover:bg-primary/20",
-                      )}
-                    >
-                      <item.icon className="h-4 w-4" />
-                    </span>
-                    {item.name}
-                    {item.badge && (
-                      <span className="ml-auto rounded-full bg-secondary px-2.5 py-0.5 text-[10px] font-bold text-white">
-                        {item.badge}
-                      </span>
-                    )}
-                  </>
-                )}
-              </NavLink>
-            ))}
+            </p>
+            <div className="space-y-0.5">
+              {mainNavigation.map((item) => (
+                <NavItem key={item.name} item={item} />
+              ))}
+            </div>
           </div>
 
-          {/* Classes Section */}
-          <div className="px-3 py-2 mt-6">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
-              Your Classes
-            </span>
-          </div>
-          <div className="space-y-1">
-            {classNavigation.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.href}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
-                    isActive
-                      ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <span
-                      className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
-                        isActive
-                          ? "bg-white/20"
-                          : "bg-primary/10 group-hover:bg-primary/20",
-                      )}
-                    >
-                      <item.icon className="h-4 w-4" />
-                    </span>
-                    {item.name}
-                  </>
-                )}
-              </NavLink>
-            ))}
+          <div>
+            <p className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
+              Classes
+            </p>
+            <div className="space-y-0.5">
+              {classNavigation.map((item) => (
+                <NavItem key={item.name} item={item} />
+              ))}
+            </div>
           </div>
 
-          {/* Instructor Section - Only shown to instructors */}
           {instructorNavigation.length > 0 && (
-            <>
-              <div className="px-3 py-2 mt-6">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
-                  Instructor
-                </span>
-              </div>
-              <div className="space-y-1">
+            <div>
+              <p className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
+                Instructor
+              </p>
+              <div className="space-y-0.5">
                 {instructorNavigation.map((item) => (
-                  <NavLink
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setOpen(false)}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
-                        isActive
-                          ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                          : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
-                      )
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
-                        <span
-                          className={cn(
-                            "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
-                            isActive
-                              ? "bg-white/20"
-                              : "bg-primary/10 group-hover:bg-primary/20",
-                          )}
-                        >
-                          <item.icon className="h-4 w-4" />
-                        </span>
-                        {item.name}
-                      </>
-                    )}
-                  </NavLink>
+                  <NavItem key={item.name} item={item} />
                 ))}
               </div>
-            </>
+            </div>
           )}
 
-          {/* Settings Section */}
-          <div className="px-3 py-2 mt-6">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <div>
+            <p className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
               Account
-            </span>
-          </div>
-          <div className="space-y-1">
-            {settingsNavigation.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.href}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-3.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 group",
-                    isActive
-                      ? "bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg shadow-primary/25"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground hover:translate-x-1",
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <span
-                      className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
-                        isActive
-                          ? "bg-white/20"
-                          : "bg-primary/10 group-hover:bg-primary/20",
-                      )}
-                    >
-                      <item.icon className="h-4 w-4" />
-                    </span>
-                    {item.name}
-                  </>
-                )}
-              </NavLink>
-            ))}
+            </p>
+            <div className="space-y-0.5">
+              {settingsNavigation.map((item) => (
+                <NavItem key={item.name} item={item} />
+              ))}
+            </div>
           </div>
         </nav>
 
-        {/* User Card */}
-        <div className="p-4">
-          <div className="rounded-2xl bg-gradient-to-br from-primary to-purple-500 p-4 text-white shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/25 text-base font-bold">
-                {user?.displayName?.charAt(0).toUpperCase() || "U"}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="truncate text-sm font-bold">
-                  {user?.displayName || "User"}
-                </p>
-                <p className="truncate text-xs opacity-80 capitalize">
-                  {user?.role || "Student"}
-                </p>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-                title="Sign out"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
+        {/* Mobile App Banner */}
+        <div className="mx-3 mb-3 p-3 rounded-xl border border-border bg-muted/30 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+              <Smartphone className="h-4 w-4 text-primary" />
+              <span className="text-sm">Get the App</span>
             </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Take SemSync on the go. Currently under development for iOS &
+              Android!
+            </p>
+            <button
+              className="w-full inline-flex items-center justify-center rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+              disabled
+            >
+              Coming Soon
+            </button>
+          </div>
+        </div>
+
+        {/* User Card */}
+        <div className="p-3 border-t border-border shrink-0">
+          <div className="flex items-center gap-3 rounded-lg p-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary shrink-0">
+              {user?.displayName?.charAt(0).toUpperCase() || "U"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="truncate text-sm font-medium text-foreground">
+                {user?.displayName || "User"}
+              </p>
+              <p className="truncate text-xs text-muted-foreground capitalize">
+                {user?.role || "Student"}
+              </p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              title="Sign out"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </aside>
